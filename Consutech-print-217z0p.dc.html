@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style data-omelette-print-defaults>
+@media print {
+  @page { margin: 0; }
+  body { padding: 0.5in; box-sizing: border-box; }
+  h1, h2, h3, h4, h5, h6 { break-after: avoid; }
+  figure, table, pre, blockquote, img, svg, li, tr { break-inside: avoid; }
+  section, article, [class~="card" i] { break-inside: avoid; }
+  img, svg { max-width: 100%; }
+  p { orphans: 3; widows: 3; }
+}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    @keyframes ctspin{to{transform:rotate(360deg)}}
+    ::-webkit-scrollbar{width:11px;height:11px}
+    ::-webkit-scrollbar-thumb{background:#d6d2c9;border-radius:7px;border:3px solid transparent;background-clip:content-box}
+    ::-webkit-scrollbar-track{background:transparent}
+  </style>
+</helmet>
+
+<div style="display:flex;height:100vh;width:100%;overflow:hidden;font-family:'Public Sans',-apple-system,sans-serif;background:#f6f5f2;color:#1d1a16;">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside style="width:268px;flex-shrink:0;height:100vh;overflow-y:auto;background:#1b1813;border-right:1px solid #2a251e;display:flex;flex-direction:column;padding:0 14px 22px;">
+    <div style="display:flex;align-items:center;gap:13px;padding:20px 6px 18px;border-bottom:1px solid #2a251e;margin-bottom:14px;">
+      <div style="width:46px;height:46px;border-radius:12px;background:#f3f2ee;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 1px rgba(255,255,255,.07);">
+        <img src="assets/consutech-mark.png" alt="Consutech" style="width:32px;height:32px;object-fit:contain;display:block;" />
+      </div>
+      <div style="min-width:0;">
+        <div style="font-size:16.5px;font-weight:800;color:#fff;letter-spacing:.2px;line-height:1.1;">{{ brandName }}</div>
+        <div style="font-size:11.5px;color:#8f877a;margin-top:2px;">by ConsultaSalarial</div>
+      </div>
+    </div>
+
+    <div style="font-size:10.5px;font-weight:700;letter-spacing:.13em;color:#6f685c;text-transform:uppercase;padding:8px 12px 6px;">Primeiros passos</div>
+    <sc-for list="{{ navPrimary }}" as="item" hint-placeholder-count="3">
+      <button onClick="{{ item.onClick }}" style="{{ item.itemStyle }}" style-hover="background:#262019">
+        <span style="{{ item.barStyle }}"></span>
+        <span style="{{ item.badgeStyle }}">{{ item.n }}</span>
+        <span>{{ item.label }}</span>
+      </button>
+    </sc-for>
+
+    <div style="font-size:10.5px;font-weight:700;letter-spacing:.13em;color:#6f685c;text-transform:uppercase;padding:20px 12px 6px;">Ciclo de análise</div>
+    <button onClick="{{ goConsulta }}" style="{{ navConsultaStyle }}" style-hover="background:#262019">
+      <span style="{{ barConsulta }}"></span>
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><line x1="12" y1="2.5" x2="12" y2="21.5"></line><path d="M16.5 6.5A4 4 0 0 0 13 4.5h-1.8a3.1 3.1 0 0 0 0 6.2h1.6a3.2 3.2 0 0 1 0 6.4H11A4 4 0 0 1 7.4 15"></path></svg>
+      <span>Consulta salarial</span>
+    </button>
+
+    <div style="font-size:10.5px;font-weight:700;letter-spacing:.13em;color:#6f685c;text-transform:uppercase;padding:20px 12px 6px;">Configuração</div>
+    <div style="display:flex;align-items:center;gap:12px;padding:9px 12px 9px 18px;border-radius:10px;color:#9a9286;font-size:14.5px;font-weight:500;cursor:pointer;line-height:1.25;" style-hover="background:#221d17">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8f887c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="9.5"></circle><path d="M9.2 9a2.8 2.8 0 0 1 5.5.8c0 1.9-2.8 2.5-2.8 2.5"></path><path d="M12 16.5h.01"></path></svg>
+      <span>Como a análise funciona</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:9px 12px 9px 18px;border-radius:10px;color:#9a9286;font-size:14.5px;font-weight:500;cursor:pointer;" style-hover="background:#221d17">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8f887c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"></circle><path d="M2.5 19.5a6.5 6.5 0 0 1 13 0"></path><path d="M16.5 5.2a3.3 3.3 0 0 1 0 6"></path><path d="M22 19.5a6.5 6.5 0 0 0-4-6"></path></svg>
+      <span>Equipe RH</span>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main style="flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0;">
+    <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:15px 32px;border-bottom:1px solid #e8e5de;background:#f6f5f2;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:9px;font-size:15px;">
+        <span style="color:#9a9388;font-weight:500;">{{ brandName }}</span>
+        <span style="color:#cfc9bf;">/</span>
+        <span style="color:#1d1a16;font-weight:700;">{{ crumbLabel }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button style="width:40px;height:40px;border-radius:11px;background:#fff;border:1px solid #e6e2da;display:flex;align-items:center;justify-content:center;cursor:pointer;" style-hover="background:#f3f1ec">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#55504a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+        </button>
+        <button style="width:40px;height:40px;border-radius:11px;background:#fff;border:1px solid #e6e2da;display:flex;align-items:center;justify-content:center;cursor:pointer;" style-hover="background:#f3f1ec">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#55504a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <div style="flex:1;overflow-y:auto;">
+
+      <!-- ============ TEMPLATE ============ -->
+      <sc-if value="{{ isTemplate }}" hint-placeholder-val="{{ true }}">
+      <div style="max-width:1180px;margin:0 auto;padding:38px 32px 72px;">
+        <div style="margin-bottom:30px;">
+          <h1 style="font-size:33px;font-weight:800;letter-spacing:-.5px;margin:0 0 10px;color:#1d1a16;">Prepare sua base de dados</h1>
+          <p style="font-size:15.5px;line-height:1.5;color:#6e6860;margin:0;max-width:640px;">Baixe a planilha modelo, preencha com os colaboradores do ciclo e envie no próximo passo. Cada coluna alimenta um critério da análise.</p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1.08fr;gap:22px;align-items:start;">
+          <div style="background:#fff;border:1px solid #eceae5;border-radius:18px;box-shadow:0 1px 2px rgba(20,18,14,.04),0 14px 30px -22px rgba(20,18,14,.18);padding:22px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+              <h2 style="font-size:18px;font-weight:700;margin:0;color:#1d1a16;">Baixar template</h2>
+              <span style="font-size:12.5px;color:#9a9388;font-weight:500;">XLSX · 27 KB</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+              <div style="width:54px;height:54px;border-radius:12px;background:#1f7a48;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <span style="color:#fff;font-size:12px;font-weight:800;letter-spacing:.5px;">XLSX</span>
+              </div>
+              <div style="min-width:0;">
+                <div style="font-size:15.5px;font-weight:700;color:#1d1a16;">template-consutech-2026.xlsx</div>
+                <div style="font-size:12.5px;color:#8a8378;margin-top:2px;line-height:1.35;">25 colunas · pré-formatado · com linhas de exemplo</div>
+              </div>
+            </div>
+            <button onClick="{{ download }}" style="border:none;cursor:pointer;background:{{ accent }};border-radius:11px;padding:12px 20px;display:inline-flex;align-items:center;justify-content:center;gap:10px;" style-hover="filter:brightness(.96)">
+              <svg width="20" height="20" viewBox="0 0 120 120" fill="none">
+                <path d="M60 20 V76" stroke="#1d1a16" stroke-width="11" stroke-linecap="round"/>
+                <path d="M33 52 L60 80 L87 52" stroke="#1d1a16" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M34 100 H86" stroke="#1d1a16" stroke-width="11" stroke-linecap="round"/>
+              </svg>
+              <span style="font-size:14.5px;font-weight:800;color:#1d1a16;">Baixar template (.xlsx)</span>
+            </button>
+            <sc-if value="{{ downloaded }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13.5px;font-weight:600;color:#1f7a48;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1f7a48" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                Download concluído — preencha e envie no passo de upload.
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="background:#fff;border:1px solid #eceae5;border-radius:18px;box-shadow:0 1px 2px rgba(20,18,14,.04),0 14px 30px -22px rgba(20,18,14,.18);padding:22px;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;">
+              <h2 style="font-size:18px;font-weight:700;margin:0;color:#1d1a16;max-width:230px;line-height:1.25;">O que você vai precisar preencher</h2>
+              <span style="font-size:12.5px;color:#9a9388;font-weight:500;text-align:right;line-height:1.4;">25 colunas<br>4 obrigatórias</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+              <sc-for list="{{ columns }}" as="col" hint-placeholder-count="8">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 12px;border:1px solid #efede8;border-radius:11px;background:#fff;">
+                  <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                    <span style="display:flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:7px;background:#f4f1ea;color:#b08f3e;font-weight:700;font-size:11.5px;flex-shrink:0;">{{ col.l }}</span>
+                    <span style="font-size:13px;font-weight:600;color:#2a2620;line-height:1.2;">{{ col.name }}</span>
+                  </div>
+                  <span style="{{ col.tagStyle }}">{{ col.tag }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;margin-top:26px;">
+          <button onClick="{{ goUpload }}" style="display:flex;align-items:center;gap:10px;background:#1d1a16;color:#fff;border:none;cursor:pointer;border-radius:13px;padding:14px 24px;font-size:15px;font-weight:700;" style-hover="background:#000">
+            Continuar para upload
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+          </button>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ UPLOAD ============ -->
+      <sc-if value="{{ isUpload }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:1000px;margin:0 auto;padding:38px 32px 72px;">
+        <div style="margin-bottom:30px;">
+          <h1 style="font-size:33px;font-weight:800;letter-spacing:-.5px;margin:0 0 10px;color:#1d1a16;">Envie sua base de colaboradores</h1>
+          <p style="font-size:15.5px;line-height:1.5;color:#6e6860;margin:0;max-width:660px;">Arraste e solte sua planilha preenchida. Vamos validar automaticamente e apontar o que precisa ser corrigido antes de gerar as recomendações.</p>
+        </div>
+
+        <sc-if value="{{ upIdle }}" hint-placeholder-val="{{ true }}">
+          <input type="file" ref="{{ fileRef }}" onChange="{{ onFilePick }}" accept=".xlsx,.xls,.csv" style="display:none" />
+          <div onClick="{{ triggerFile }}" onDragOver="{{ onDragOver }}" onDrop="{{ onDrop }}" style="width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border:2px dashed #d8b65a;background:#fbf6e6;border-radius:18px;padding:54px 24px;cursor:pointer;" style-hover="background:#f9f1da">
+            <div style="width:64px;height:64px;border-radius:15px;background:#f1e4bd;display:flex;align-items:center;justify-content:center;">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1d1a16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6"></path><path d="m6 12 6-6 6 6"></path><path d="M5 20h14"></path></svg>
+            </div>
+            <div style="font-size:18px;font-weight:700;color:#1d1a16;">Arraste o arquivo aqui</div>
+            <div style="font-size:13.5px;color:#8a8378;">ou clique para selecionar — formatos aceitos: .xlsx, .xls, .csv (até 25 MB)</div>
+            <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e6e2da;border-radius:12px;padding:12px 20px;margin-top:6px;font-size:14.5px;font-weight:700;color:#1d1a16;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d1a16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6"></path><path d="m6 12 6-6 6 6"></path><path d="M5 20h14"></path></svg>
+              Escolher arquivo
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:9px;margin-top:16px;font-size:13px;color:#8a8378;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b08f3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M12 8h.01"></path><path d="M11 12h1v4h1"></path></svg>
+            Vamos verificar automaticamente as <strong style="color:#5a544c;font-weight:700;margin:0 3px;">4 colunas obrigatórias</strong> em cada linha.
+          </div>
+          <div style="margin-top:28px;">
+            <button onClick="{{ goTemplate }}" style="display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #e6e2da;cursor:pointer;border-radius:14px;padding:16px 22px;font-size:14.5px;font-weight:700;color:#1d1a16;" style-hover="background:#f3f1ec">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1d1a16" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="m11 18-6-6 6-6"></path></svg>
+              Voltar para template
+            </button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ upValidating }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid #eceae5;border-radius:18px;padding:60px 24px;display:flex;flex-direction:column;align-items:center;gap:18px;box-shadow:0 14px 30px -22px rgba(20,18,14,.18);">
+            <div style="width:48px;height:48px;border-radius:50%;border:4px solid #efece4;border-top-color:#c2a14d;animation:ctspin .8s linear infinite;"></div>
+            <div style="font-size:17px;font-weight:700;color:#1d1a16;">Validando base de colaboradores…</div>
+            <div style="font-size:13.5px;color:#8a8378;">Conferindo 25 colunas e 4 critérios obrigatórios</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ upError }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="display:flex;align-items:flex-start;gap:14px;background:#fdecea;border:1px solid #f4c6c0;border-radius:16px;padding:18px 20px;margin-bottom:18px;">
+              <div style="width:38px;height:38px;border-radius:10px;background:#f7d4ce;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c2453a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path></svg>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:16.5px;font-weight:800;color:#9e2f26;">Não é possível avançar</div>
+                <div style="font-size:14px;color:#a85149;margin-top:3px;line-height:1.45;">{{ errorHeadline }}</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+              <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #eceae5;border-radius:10px;padding:9px 14px;font-size:13px;color:#5a544c;font-weight:600;"><span style="color:#9a9388;font-weight:500;">Arquivo</span> {{ fileName }}</div>
+              <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #eceae5;border-radius:10px;padding:9px 14px;font-size:13px;color:#5a544c;font-weight:600;">{{ rowsDetected }} linhas detectadas</div>
+              <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #eceae5;border-radius:10px;padding:9px 14px;font-size:13px;color:#5a544c;font-weight:600;">{{ colsRecognized }} colunas reconhecidas</div>
+              <div style="display:flex;align-items:center;gap:8px;background:#fdecea;border:1px solid #f4c6c0;border-radius:10px;padding:9px 14px;font-size:13px;color:#c2453a;font-weight:700;">{{ errCount }} pendências</div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr;gap:18px;">
+              <div style="background:#fff;border:1px solid #eceae5;border-radius:16px;padding:20px;box-shadow:0 14px 30px -24px rgba(20,18,14,.16);">
+                <h3 style="font-size:15px;font-weight:800;margin:0 0 14px;color:#1d1a16;">Pendências por coluna obrigatória</h3>
+                <div style="display:flex;flex-direction:column;gap:9px;">
+                  <sc-for list="{{ pendencias }}" as="p" hint-placeholder-count="4">
+                    <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid #f4d8d3;background:#fdf4f3;border-radius:11px;">
+                      <span style="display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;background:#f7d4ce;color:#c2453a;font-weight:800;font-size:12px;flex-shrink:0;">{{ p.letter }}</span>
+                      <span style="font-size:14px;font-weight:700;color:#1d1a16;flex:1;">{{ p.name }}</span>
+                      <span style="font-size:12.5px;color:#9e2f26;font-weight:700;">{{ p.countLabel }}</span>
+                      <span style="font-size:12.5px;color:#a85149;">{{ p.linhasLabel }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="background:#fff;border:1px solid #eceae5;border-radius:16px;padding:20px;box-shadow:0 14px 30px -24px rgba(20,18,14,.16);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+                  <h3 style="font-size:15px;font-weight:800;margin:0;color:#1d1a16;">Prévia da base enviada</h3>
+                  <span style="font-size:12px;color:#9a9388;display:flex;align-items:center;gap:7px;"><span style="width:11px;height:11px;border-radius:3px;background:#fdeceb;border:1px solid #f4c6c0;display:inline-block;"></span>célula obrigatória em branco</span>
+                </div>
+                <div style="overflow:auto;border:1px solid #eceae5;border-radius:12px;max-height:330px;">
+                  <table style="border-collapse:collapse;width:max-content;font-size:12.5px;">
+                    <thead>
+                      <tr>
+                        <th style="position:sticky;top:0;left:0;z-index:3;background:#faf8f4;padding:9px 13px;text-align:left;font-size:11px;font-weight:800;color:#6e6860;border-bottom:1px solid #e6e3dc;border-right:1px solid #eceae5;white-space:nowrap;">Linha</th>
+                        <sc-for list="{{ columns }}" as="col" hint-placeholder-count="6">
+                          <th style="position:sticky;top:0;z-index:2;background:#faf8f4;padding:9px 13px;text-align:left;font-size:11px;font-weight:700;color:#6e6860;border-bottom:1px solid #e6e3dc;white-space:nowrap;">{{ col.headerLabel }}</th>
+                        </sc-for>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <sc-for list="{{ preview }}" as="row" hint-placeholder-count="6">
+                        <tr>
+                          <td style="position:sticky;left:0;z-index:1;background:#faf8f4;padding:7px 13px;font-weight:700;color:#6e6860;border-bottom:1px solid #f0eee9;border-right:1px solid #eceae5;white-space:nowrap;">{{ row.linha }}</td>
+                          <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="6">
+                            <td style="{{ cell.style }}">{{ cell.text }}</td>
+                          </sc-for>
+                        </tr>
+                      </sc-for>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:24px;flex-wrap:wrap;">
+              <button onClick="{{ resetUpload }}" style="font-size:14px;color:#8a8378;background:none;border:none;cursor:pointer;font-weight:700;" style-hover="color:#1d1a16">↻ Trocar arquivo</button>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;">
+                <button disabled="true" style="display:flex;align-items:center;gap:9px;background:#ecebe6;color:#a8a298;border:none;cursor:not-allowed;border-radius:13px;padding:13px 22px;font-size:14.5px;font-weight:800;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a8a298" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="11" width="17" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                  Avançar para diagnóstico
+                </button>
+                <span style="font-size:11.5px;color:#c2453a;margin-top:6px;font-weight:600;">Corrija as pendências e reenvie para liberar</span>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ upSuccess }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="display:flex;align-items:flex-start;gap:14px;background:#e9f6ee;border:1px solid #b9e0c8;border-radius:16px;padding:18px 20px;margin-bottom:18px;">
+              <div style="width:38px;height:38px;border-radius:10px;background:#c7ebd5;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1f7a48" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:16.5px;font-weight:800;color:#1c6b3f;">Base validada com sucesso</div>
+                <div style="font-size:14px;color:#3c8159;margin-top:3px;line-height:1.45;"><strong>{{ rowsDetected }} colaboradores</strong> · {{ colsRecognized }} colunas · nenhuma pendência nas colunas obrigatórias.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+              <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #eceae5;border-radius:10px;padding:9px 14px;font-size:13px;color:#5a544c;font-weight:600;"><span style="color:#9a9388;font-weight:500;">Arquivo</span> {{ fileName }}</div>
+              <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #eceae5;border-radius:10px;padding:9px 14px;font-size:13px;color:#5a544c;font-weight:600;">{{ rowsDetected }} linhas</div>
+              <div style="display:flex;align-items:center;gap:8px;background:#e9f6ee;border:1px solid #b9e0c8;border-radius:10px;padding:9px 14px;font-size:13px;color:#1f7a48;font-weight:700;">4/4 obrigatórias completas</div>
+            </div>
+
+            <div style="background:#fff;border:1px solid #eceae5;border-radius:16px;padding:20px;box-shadow:0 14px 30px -24px rgba(20,18,14,.16);">
+              <h3 style="font-size:15px;font-weight:800;margin:0 0 13px;color:#1d1a16;">Prévia da base validada</h3>
+              <div style="overflow:auto;border:1px solid #eceae5;border-radius:12px;max-height:330px;">
+                <table style="border-collapse:collapse;width:max-content;font-size:12.5px;">
+                  <thead>
+                    <tr>
+                      <th style="position:sticky;top:0;left:0;z-index:3;background:#faf8f4;padding:9px 13px;text-align:left;font-size:11px;font-weight:800;color:#6e6860;border-bottom:1px solid #e6e3dc;border-right:1px solid #eceae5;white-space:nowrap;">Linha</th>
+                      <sc-for list="{{ columns }}" as="col" hint-placeholder-count="6">
+                        <th style="position:sticky;top:0;z-index:2;background:#faf8f4;padding:9px 13px;text-align:left;font-size:11px;font-weight:700;color:#6e6860;border-bottom:1px solid #e6e3dc;white-space:nowrap;">{{ col.headerLabel }}</th>
+                      </sc-for>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ preview }}" as="row" hint-placeholder-count="6">
+                      <tr>
+                        <td style="position:sticky;left:0;z-index:1;background:#faf8f4;padding:7px 13px;font-weight:700;color:#6e6860;border-bottom:1px solid #f0eee9;border-right:1px solid #eceae5;white-space:nowrap;">{{ row.linha }}</td>
+                        <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="6">
+                          <td style="{{ cell.style }}">{{ cell.text }}</td>
+                        </sc-for>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:24px;flex-wrap:wrap;">
+              <button onClick="{{ resetUpload }}" style="font-size:14px;color:#8a8378;background:none;border:none;cursor:pointer;font-weight:700;" style-hover="color:#1d1a16">↻ Enviar outro arquivo</button>
+              <button onClick="{{ goDiagnostico }}" style="display:flex;align-items:center;gap:10px;background:#1d1a16;color:#fff;border:none;cursor:pointer;border-radius:13px;padding:14px 26px;font-size:15px;font-weight:800;" style-hover="background:#000">
+                Avançar para diagnóstico
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+              </button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <!-- ============ DIAGNÓSTICO ============ -->
+      <sc-if value="{{ isDiag }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:1180px;margin:0 auto;padding:38px 32px 72px;">
+        <div style="margin-bottom:24px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+            <h1 style="font-size:33px;font-weight:800;letter-spacing:-.5px;margin:0;color:#1d1a16;">Diagnóstico</h1>
+            <span style="display:flex;align-items:center;gap:7px;background:#f4eeda;border:1px solid #e3cf95;border-radius:9px;padding:6px 12px;font-size:12.5px;font-weight:700;color:#7a5e1e;">{{ diagProgressLabel }}</span>
+          </div>
+          <p style="font-size:15.5px;line-height:1.55;color:#5a544c;margin:0;max-width:760px;">O diagnóstico nos ajuda a calibrar a consulta com as regras e práticas atuais da sua empresa. As perguntas abaixo são feitas por <strong style="color:#1d1a16;">cargo + senioridade únicos</strong> da base que você enviou e serão usadas nas próximas análises.</p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start;">
+          <!-- combos list -->
+          <div style="background:#fff;border:1px solid #eceae5;border-radius:16px;padding:12px;box-shadow:0 14px 30px -24px rgba(20,18,14,.16);position:sticky;top:0;">
+            <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9a9388;padding:8px 10px 10px;">Cargos a calibrar · {{ comboCount }}</div>
+            <div style="display:flex;flex-direction:column;gap:2px;max-height:62vh;overflow-y:auto;">
+              <sc-for list="{{ comboList }}" as="c" hint-placeholder-count="6">
+                <button onClick="{{ c.onClick }}" style="{{ c.itemStyle }}" style-hover="background:#f6f1e4">
+                  <span style="{{ c.barStyle }}"></span>
+                  <span style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px;">
+                    <span style="font-size:14px;font-weight:700;color:#1d1a16;line-height:1.2;">{{ c.cargo }}</span>
+                    <sc-if value="{{ c.answered }}" hint-placeholder-val="{{ false }}">
+                      <span style="width:18px;height:18px;border-radius:50%;background:#e9f6ee;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1f7a48" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+                    </sc-if>
+                  </span>
+                  <span style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                    <span style="{{ senTagStyle }}">{{ c.senioridade }}</span>
+                    <span style="font-size:11.5px;color:#9a9388;">{{ c.setor }}</span>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- questions panel -->
+          <div style="background:#fff;border:1px solid #eceae5;border-radius:16px;padding:26px;box-shadow:0 14px 30px -24px rgba(20,18,14,.16);">
+            <div style="display:flex;align-items:center;gap:12px;padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid #f0eee9;">
+              <div style="width:42px;height:42px;border-radius:11px;background:#f4eeda;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7a5e1e" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M5.5 20a6.5 6.5 0 0 1 13 0"></path></svg>
+              </div>
+              <div>
+                <div style="font-size:19px;font-weight:800;color:#1d1a16;line-height:1.15;">{{ activeTitle }}</div>
+                <div style="font-size:13px;color:#8a8378;margin-top:3px;">{{ activeSub }}</div>
+              </div>
+            </div>
+
+            <!-- Q1 CERTS -->
+            <div style="margin-bottom:30px;">
+              <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:14px;">
+                <span style="display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;background:{{ accent }};color:#1d1a16;font-weight:800;font-size:13px;flex-shrink:0;">1</span>
+                <div>
+                  <div style="font-size:15.5px;font-weight:700;color:#1d1a16;">Selecione as certificações obrigatórias</div>
+                  <div style="font-size:12.5px;color:#9a9388;margin-top:2px;">Quais certificações são exigidas para este cargo + senioridade.</div>
+                </div>
+              </div>
+
+              <div style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a9388;margin-bottom:9px;">Selecionadas</div>
+              <sc-if value="{{ certHasSel }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;">
+                  <sc-for list="{{ certSelected }}" as="s" hint-placeholder-count="2">
+                    <span style="{{ chipStyle }}">{{ s.label }}<button onClick="{{ s.onRemove }}" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:none;background:rgba(122,94,30,.14);color:#7a5e1e;cursor:pointer;font-size:13px;line-height:1;padding:0;" style-hover="background:rgba(122,94,30,.28)">×</button></span>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ certNoSel }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size:13px;color:#a8a298;font-style:italic;padding:10px 14px;border:1px dashed #e2ded5;border-radius:11px;margin-bottom:18px;">Nenhuma certificação selecionada ainda — escolha abaixo ou escreva uma nova.</div>
+              </sc-if>
+
+              <div style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a9388;margin-bottom:9px;">Opções padrão</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+                <sc-for list="{{ certOpts }}" as="o" hint-placeholder-count="5">
+                  <button onClick="{{ o.onClick }}" style="{{ o.style }}" style-hover="border-color:#c9b27a">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <div style="max-width:460px;">
+                <div style="display:flex;gap:9px;">
+                <input value="{{ certDraft }}" onChange="{{ onCertDraft }}" onKeyDown="{{ onCertKey }}" placeholder="Escrever outra certificação…" style="flex:1;border:1px solid #e2ded5;border-radius:10px;padding:10px 14px;font-size:13.5px;font-family:inherit;color:#1d1a16;outline:none;background:#faf9f6;" />
+                <button onClick="{{ addCert }}" style="display:flex;align-items:center;gap:6px;border:1px solid #1d1a16;background:#1d1a16;color:#fff;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;" style-hover="background:#000">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+                  Adicionar
+                </button>
+                </div>
+                <sc-if value="{{ certSuggestion }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;align-items:center;gap:6px;margin-top:9px;font-size:13px;color:#8a8378;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#b08f3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M9.5 14.5 4 20"></path><path d="M14 4 18 8"></path><path d="m6.5 11.5 6-6 6 6-6 6z"></path></svg>
+                    Você quis dizer
+                    <button onClick="{{ acceptCertSug }}" style="border:none;background:#f4eeda;color:#7a5e1e;font-weight:800;font-size:13px;padding:3px 10px;border-radius:7px;cursor:pointer;font-family:inherit;" style-hover="background:#ecdfb8">{{ certSuggestion }}</button>
+                    ?
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+
+            <!-- Q2 STACKS -->
+            <div style="padding-top:24px;border-top:1px solid #f0eee9;">
+              <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:14px;">
+                <span style="display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;background:{{ accent }};color:#1d1a16;font-weight:800;font-size:13px;flex-shrink:0;">2</span>
+                <div>
+                  <div style="font-size:15.5px;font-weight:700;color:#1d1a16;">Principais stacks</div>
+                  <div style="font-size:12.5px;color:#9a9388;margin-top:2px;">Tecnologias e ferramentas centrais usadas neste cargo + senioridade.</div>
+                </div>
+              </div>
+
+              <div style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a9388;margin-bottom:9px;">Selecionadas</div>
+              <sc-if value="{{ stackHasSel }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;">
+                  <sc-for list="{{ stackSelected }}" as="s" hint-placeholder-count="2">
+                    <span style="{{ chipStyle }}">{{ s.label }}<button onClick="{{ s.onRemove }}" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:none;background:rgba(122,94,30,.14);color:#7a5e1e;cursor:pointer;font-size:13px;line-height:1;padding:0;" style-hover="background:rgba(122,94,30,.28)">×</button></span>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ stackNoSel }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size:13px;color:#a8a298;font-style:italic;padding:10px 14px;border:1px dashed #e2ded5;border-radius:11px;margin-bottom:18px;">Nenhuma stack selecionada ainda — escolha abaixo ou escreva uma nova.</div>
+              </sc-if>
+
+              <div style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a9388;margin-bottom:9px;">Opções padrão</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+                <sc-for list="{{ stackOpts }}" as="o" hint-placeholder-count="6">
+                  <button onClick="{{ o.onClick }}" style="{{ o.style }}" style-hover="border-color:#c9b27a">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <div style="max-width:460px;">
+                <div style="display:flex;gap:9px;">
+                <input value="{{ stackDraft }}" onChange="{{ onStackDraft }}" onKeyDown="{{ onStackKey }}" placeholder="Escrever outra stack…" style="flex:1;border:1px solid #e2ded5;border-radius:10px;padding:10px 14px;font-size:13.5px;font-family:inherit;color:#1d1a16;outline:none;background:#faf9f6;" />
+                <button onClick="{{ addStack }}" style="display:flex;align-items:center;gap:6px;border:1px solid #1d1a16;background:#1d1a16;color:#fff;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;" style-hover="background:#000">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+                  Adicionar
+                </button>
+                </div>
+                <sc-if value="{{ stackSuggestion }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;align-items:center;gap:6px;margin-top:9px;font-size:13px;color:#8a8378;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#b08f3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M9.5 14.5 4 20"></path><path d="M14 4 18 8"></path><path d="m6.5 11.5 6-6 6 6-6 6z"></path></svg>
+                    Você quis dizer
+                    <button onClick="{{ acceptStackSug }}" style="border:none;background:#f4eeda;color:#7a5e1e;font-weight:800;font-size:13px;padding:3px 10px;border-radius:7px;cursor:pointer;font-family:inherit;" style-hover="background:#ecdfb8">{{ stackSuggestion }}</button>
+                    ?
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+
+            <!-- footer ações -->
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:26px;padding-top:18px;border-top:1px solid #f0eee9;flex-wrap:wrap;">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:#1f7a48;font-weight:600;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f7a48" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                Respostas salvas automaticamente para este cargo.
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <sc-if value="{{ hasNextCombo }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ nextCombo }}" style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e6e2da;color:#1d1a16;border-radius:11px;padding:11px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;" style-hover="background:#f3f1ec">
+                    Próximo cargo
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1d1a16" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+                  </button>
+                </sc-if>
+                <button onClick="{{ finishDiag }}" style="display:flex;align-items:center;gap:9px;background:#1d1a16;color:#fff;border:none;border-radius:11px;padding:11px 20px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;" style-hover="background:#000">
+                  Concluir e ver consulta
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ CONSULTA — LISTA DE CARGOS ============ -->
+      <sc-if value="{{ isConsultaList }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:1240px;margin:0 auto;padding:38px 32px 72px;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:22px;flex-wrap:wrap;">
+          <div>
+            <h1 style="font-size:33px;font-weight:800;letter-spacing:-.5px;margin:0 0 10px;color:#1d1a16;">Consulta salarial</h1>
+            <p style="font-size:15.5px;line-height:1.5;color:#6e6860;margin:0;max-width:680px;">Explore os cargos do mercado e veja as faixas de remuneração. Selecione um cargo para abrir a análise completa.</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+            <span style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9a9388;">Mercado</span>
+            <span style="display:inline-flex;align-items:center;gap:8px;background:#1d1a16;color:#fff;border-radius:999px;padding:8px 16px;font-size:13.5px;font-weight:700;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c2a14d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M2.5 12h19"></path><path d="M12 2.5a14 14 0 0 1 0 19a14 14 0 0 1 0-19Z"></path></svg>{{ mktLabel }}</span>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid #eceae5;border-radius:14px;padding:16px 18px;margin-bottom:22px;box-shadow:0 10px 24px -22px rgba(20,18,14,.18);">
+          <div style="display:flex;flex-direction:column;flex:1;min-width:200px;"><span style="font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a9388;margin-bottom:6px;">Buscar</span>
+            <div style="position:relative;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a8a298" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              <input value="{{ cSearch }}" onInput="{{ onSearch }}" placeholder="Cargo ou nomenclatura…" style="width:100%;border:1px solid #e6e2da;border-radius:10px;padding:9px 12px 9px 34px;font-size:13.5px;font-family:inherit;color:#1d1a16;background:#fff;outline:none;" /></div>
+          </div>
+          <div style="display:flex;flex-direction:column;"><span style="font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a9388;margin-bottom:6px;">Senioridade</span><select value="{{ cSen }}" onChange="{{ onCSen }}" style="border:1px solid #e6e2da;border-radius:10px;padding:9px 12px;font-size:13.5px;font-family:inherit;color:#1d1a16;background:#fff;cursor:pointer;outline:none;min-width:130px;"><sc-for list="{{ cSenOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o }}">{{ o }}</option></sc-for></select></div>
+          <div style="display:flex;flex-direction:column;"><span style="font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a9388;margin-bottom:6px;">Localização</span><select value="{{ cLoc }}" onChange="{{ onCLoc }}" style="border:1px solid #e6e2da;border-radius:10px;padding:9px 12px;font-size:13.5px;font-family:inherit;color:#1d1a16;background:#fff;cursor:pointer;outline:none;min-width:130px;max-width:170px;"><sc-for list="{{ cLocOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o }}">{{ o }}</option></sc-for></select></div>
+          <div style="display:flex;flex-direction:column;"><span style="font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a9388;margin-bottom:6px;">Stack</span><select value="{{ cStack }}" onChange="{{ onCStack }}" style="border:1px solid #e6e2da;border-radius:10px;padding:9px 12px;font-size:13.5px;font-family:inherit;color:#1d1a16;background:#fff;cursor:pointer;outline:none;min-width:120px;"><sc-for list="{{ cStackOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o }}">{{ o }}</option></sc-for></select></div>
+          <div style="display:flex;flex-direction:column;"><span style="font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a9388;margin-bottom:6px;">Contrato</span><select value="{{ cContract }}" onChange="{{ onCContract }}" style="border:1px solid #e6e2da;border-radius:10px;padding:9px 12px;font-size:13.5px;font-family:inherit;color:#1d1a16;background:#fff;cursor:pointer;outline:none;min-width:100px;"><sc-for list="{{ cContractOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select></div>
+          <button onClick="{{ clearCFilters }}" style="border:none;background:none;color:#8a8378;font-weight:700;font-size:13px;cursor:pointer;padding:11px 4px;" style-hover="color:#1d1a16">Limpar</button>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:13px;color:#8a8378;font-weight:600;">{{ cargoCountLabel }}</div>
+
+        <sc-if value="{{ cargoEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px dashed #e2ded5;border-radius:14px;padding:40px;text-align:center;font-size:14px;color:#9a9388;">Nenhum cargo encontrado para os filtros atuais.</div>
+        </sc-if>
+
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+          <sc-for list="{{ cargoCards }}" as="c" hint-placeholder-count="6">
+            <button onClick="{{ c.onOpen }}" style="text-align:left;background:#fff;border:1px solid #eceae5;border-radius:16px;padding:20px 22px;cursor:pointer;font-family:inherit;box-shadow:0 10px 26px -24px rgba(20,18,14,.16);display:flex;flex-direction:column;gap:11px;" style-hover="border-color:#d8c79a">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+                <div style="min-width:0;">
+                  <div style="font-size:17px;font-weight:800;color:#1d1a16;line-height:1.2;">{{ c.market }}</div>
+                  <sc-if value="{{ c.hasCompany }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;align-items:center;gap:7px;margin-top:6px;">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2f6db0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path></svg>
+                      <span style="font-size:13px;font-weight:700;color:#2f6db0;">{{ c.company }}</span>
+                      <span style="font-size:11px;color:#9a9388;">· na sua empresa</span>
+                    </div>
+                  </sc-if>
+                </div>
+                <span style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:#f4f1ea;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b08f3e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg></span>
+              </div>
+              <div style="font-size:13px;line-height:1.5;color:#6e6860;">{{ c.desc }}</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;">
+                <span style="font-size:11px;color:#9a9388;font-weight:600;margin-right:2px;">Trilha:</span>
+                <sc-for list="{{ c.trilhaTags }}" as="t" hint-placeholder-count="4"><span style="font-size:11px;font-weight:700;color:#7a5e1e;background:#f4eeda;padding:2px 8px;border-radius:6px;">{{ t }}</span></sc-for>
+              </div>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ CONSULTA — DETALHE DO CARGO ============ -->
+      <sc-if value="{{ isConsultaDetail }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:1240px;margin:0 auto;padding:30px 32px 72px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
+          <button onClick="{{ backToList }}" style="display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #e6e2da;cursor:pointer;border-radius:11px;padding:9px 16px;font-size:13.5px;font-weight:700;color:#1d1a16;font-family:inherit;" style-hover="background:#f3f1ec">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1d1a16" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="m11 18-6-6 6-6"></path></svg>
+            Voltar para cargos
+          </button>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <span style="display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid #e6e2da;color:#46413a;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b08f3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>{{ locContextLabel }}</span>
+            <span style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9a9388;">Mercado</span>
+            <span style="display:inline-flex;align-items:center;gap:8px;background:#1d1a16;color:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c2a14d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M2.5 12h19"></path><path d="M12 2.5a14 14 0 0 1 0 19a14 14 0 0 1 0-19Z"></path></svg>{{ mktLabel }}</span>
+          </div>
+        </div>
+
+        <!-- Trilha -->
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
+          <span style="font-size:14px;font-weight:800;color:#1d1a16;flex-shrink:0;">Trilha</span>
+          <div style="display:flex;gap:9px;overflow-x:auto;padding-bottom:4px;">
+            <sc-for list="{{ detailTrilha }}" as="t" hint-placeholder-count="4">
+              <button onClick="{{ t.onClick }}" style="{{ t.style }}" style-hover="border-color:#c9b27a">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- Header cargo -->
+        <div style="background:#fff;border:1px solid #eceae5;border-radius:16px;padding:24px;box-shadow:0 14px 30px -24px rgba(20,18,14,.16);margin-bottom:18px;">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:20px;flex-wrap:wrap;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#c2a14d" stroke="#c2a14d" stroke-width="1.2" stroke-linejoin="round" style="flex-shrink:0"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+            <h1 style="font-size:23px;font-weight:800;letter-spacing:-.4px;margin:0;color:#1d1a16;line-height:1.2;">{{ dTitle }}</h1>
+            <span style="font-size:13px;font-weight:800;color:#7a5e1e;background:#f4eeda;border:1px solid #e3cf95;padding:4px 12px;border-radius:999px;white-space:nowrap;">{{ dNivel }}</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:24px 38px;margin-bottom:18px;">
+            <div><div style="font-size:11px;font-weight:700;color:#9a9388;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">Nível</div><div style="font-size:14px;font-weight:700;color:#1d1a16;">{{ dNivel }}</div></div>
+            <div><div style="font-size:11px;font-weight:700;color:#9a9388;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">Área</div><div style="font-size:14px;font-weight:700;color:#1d1a16;">{{ dArea }}</div></div>
+            <div><div style="font-size:11px;font-weight:700;color:#9a9388;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">Setor</div><div style="font-size:14px;font-weight:700;color:#1d1a16;">{{ dSetor }}</div></div>
+            <div><div style="font-size:11px;font-weight:700;color:#9a9388;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">Disciplina</div><div style="font-size:14px;font-weight:700;color:#1d1a16;">{{ dDisciplina }}</div></div>
+            <div><div style="font-size:11px;font-weight:700;color:#9a9388;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">SMCode</div><div style="font-size:14px;font-weight:700;color:#1d1a16;">{{ dSMCode }}</div></div>
+            <div><div style="font-size:11px;font-weight:700;color:#9a9388;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">CBO</div><div style="font-size:14px;font-weight:700;color:#1d1a16;">{{ dCBO }}</div></div>
+          </div>
+          <p style="font-size:14px;line-height:1.55;color:#46413a;margin:0 0 14px;">{{ dDesc }}</p>
+          <p style="font-size:13px;line-height:1.55;color:#6e6860;margin:0 0 8px;"><span style="font-weight:700;color:#1d1a16;">Outras nomenclaturas:</span> {{ dOutras }}</p>
+          <sc-if value="{{ dCompanyShow }}" hint-placeholder-val="{{ false }}">
+            <p style="font-size:13px;line-height:1.55;color:#6e6860;margin:0;"><span style="font-weight:700;color:#1d1a16;">Nomenclatura na sua empresa:</span> <span style="color:#2f6db0;font-weight:700;">{{ dCompanyNom }}</span></p>
+          </sc-if>
+        </div>
+
+        <!-- Diagnóstico aplicado -->
+        <div style="background:#fff;border:1px solid #eceae5;border-radius:16px;padding:22px;box-shadow:0 14px 30px -24px rgba(20,18,14,.16);margin-bottom:18px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7a5e1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"></path><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"></path></svg>
+            <h3 style="font-size:15.5px;font-weight:800;margin:0;color:#1d1a16;">Requisitos do seu diagnóstico</h3>
+          </div>
+          <div style="font-size:12.5px;color:#9a9388;margin-bottom:18px;">Definido para <strong style="color:#1d1a16;">{{ dTitle }} · {{ dNivel }}</strong> no passo de Diagnóstico, aplicado a este cargo.</div>
+
+          <sc-if value="{{ diagNoDiag }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 16px;border:1px dashed #e2ded5;border-radius:12px;background:#faf9f6;">
+              <span style="font-size:13.5px;color:#8a8378;">Nenhuma certificação ou stack definida para este cargo + senioridade ainda.</span>
+              <button onClick="{{ goDiagnostico }}" style="display:flex;align-items:center;gap:7px;border:1px solid #1d1a16;background:#1d1a16;color:#fff;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;" style-hover="background:#000">Ir para o Diagnóstico<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ hasDiag }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;">
+              <div>
+                <div style="font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#9a9388;margin-bottom:10px;">Certificações exigidas</div>
+                <sc-if value="{{ diagCertHas }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ diagCertPills }}" as="p" hint-placeholder-count="2"><span style="{{ p.style }}">{{ p.label }}</span></sc-for></div>
+                </sc-if>
+                <sc-if value="{{ naoAplica }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:13px;color:#8a8378;font-style:italic;">Não se aplica a este cargo.</span>
+                </sc-if>
+              </div>
+              <div>
+                <div style="font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#9a9388;margin-bottom:10px;">Principais stacks</div>
+                <sc-if value="{{ diagStackHas }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ diagStackPills }}" as="p" hint-placeholder-count="3"><span style="{{ p.style }}">{{ p.label }}</span></sc-for></div>
+                </sc-if>
+                <sc-if value="{{ diagStackHas }}" hint-placeholder-val="{{ false }}"></sc-if>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid #f0eee9;">
+              <sc-if value="{{ certObrigShow }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:1;min-width:240px;">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:7px;"><span style="font-size:12.5px;font-weight:700;color:#2a2620;">Sua base com certificação obrigatória</span><span style="font-size:13px;font-weight:800;color:#1d1a16;">{{ certObrigPct }}%</span></div>
+                  <div style="height:11px;background:#f1efe9;border-radius:6px;"><div style="{{ certObrigBarStyle }}"></div></div>
+                  <div style="font-size:11px;color:#9a9388;margin-top:6px;">Coluna "Certificação Obrigatória" da base enviada, neste cargo.</div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ certPremiumShow }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:1;min-width:240px;background:#f4eeda;border:1px solid #e3cf95;border-radius:12px;padding:14px 16px;">
+                  <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:22px;font-weight:800;color:#7a5e1e;">{{ certPremiumLabel }}</span><span style="font-size:12.5px;font-weight:700;color:#9a8453;">na mediana de mercado</span></div>
+                  <div style="font-size:12px;color:#8a7a52;margin-top:5px;line-height:1.45;">Exigir {{ diagCertText }} está associado a cerca de {{ certPremiumDelta }} a mais na mediana deste cargo no mercado {{ mktLabel }}.</div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- Salary cards + contract filter -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;flex-wrap:wrap;">
+          <h3 style="font-size:16px;font-weight:800;margin:0;color:#1d1a16;">Faixas de remuneração <span style="font-weight:500;color:#9a9388;">· {{ dContract }}</span></h3>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a9388;">Contrato</span>
+            <div style="display:inline-flex;background:#efece4;border-radius:10px;padding:3px;">
+              <button onClick="{{ setContractPJ }}" style="{{ contractPJStyle }}">PJ</button>
+              <button onClick="{{ setContractCLT }}" style="{{ contractCLTStyle }}">CLT</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="{{ salaryGridStyle }}">
+          <sc-for list="{{ salaryCards }}" as="s" hint-placeholder-count="3">
+            <div style="background:#fff;border:1px solid #eceae5;border-radius:16px;padding:20px;box-shadow:0 14px 30px -24px rgba(20,18,14,.16);">
+              <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:18px;">
+                <span style="font-size:16px;font-weight:800;color:#1d1a16;">{{ s.title }}</span>
+                <span style="font-size:12px;color:#9a9388;font-weight:600;">{{ s.sub }}</span>
+              </div>
+              <div style="display:flex;gap:10px;">
+                <div style="flex:1;background:#faf8f4;border:1px solid #f0ece3;border-radius:11px;padding:12px 10px;text-align:center;">
+                  <div style="font-size:10px;font-weight:800;letter-spacing:.04em;color:#9a9388;text-transform:uppercase;margin-bottom:7px;">1º Quartil</div>
+                  <div style="font-size:16px;font-weight:700;color:#46413a;">{{ s.q1Label }}</div>
+                </div>
+                <div style="flex:1;background:#f4eeda;border:1px solid #e3cf95;border-radius:11px;padding:12px 10px;text-align:center;">
+                  <div style="font-size:10px;font-weight:800;letter-spacing:.04em;color:#7a5e1e;text-transform:uppercase;margin-bottom:7px;">Mediana</div>
+                  <div style="font-size:18px;font-weight:800;color:#1d1a16;">{{ s.medLabel }}</div>
+                </div>
+                <div style="flex:1;background:#faf8f4;border:1px solid #f0ece3;border-radius:11px;padding:12px 10px;text-align:center;">
+                  <div style="font-size:10px;font-weight:800;letter-spacing:.04em;color:#9a9388;text-transform:uppercase;margin-bottom:7px;">3º Quartil</div>
+                  <div style="font-size:16px;font-weight:700;color:#46413a;">{{ s.q3Label }}</div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- Analysis cards -->
+        <div style="display:grid;grid-template-columns:1.25fr 1fr;gap:18px;margin-top:18px;">
+          <div style="background:#fff;border:1px solid #eceae5;border-radius:16px;padding:22px;box-shadow:0 14px 30px -24px rgba(20,18,14,.16);">
+            <h3 style="font-size:15.5px;font-weight:800;margin:0 0 4px;color:#1d1a16;">Benefícios oferecidos</h3>
+            <div style="font-size:12.5px;color:#9a9388;margin-bottom:18px;">% de empresas do mercado {{ mktLabel }} que oferecem cada benefício para este cargo.</div>
+            <sc-for list="{{ benefits }}" as="b" hint-placeholder-count="6">
+              <div style="margin-bottom:14px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;font-weight:600;color:#2a2620;">{{ b.label }}</span><span style="font-size:12.5px;font-weight:800;color:#1d1a16;">{{ b.pctLabel }}</span></div>
+                <div style="height:11px;background:#f1efe9;border-radius:6px;"><div style="{{ b.barStyle }}"></div></div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;border:1px solid #eceae5;border-radius:16px;padding:22px;box-shadow:0 14px 30px -24px rgba(20,18,14,.16);">
+            <h3 style="font-size:15.5px;font-weight:800;margin:0 0 4px;color:#1d1a16;">Modelo de trabalho</h3>
+            <div style="font-size:12.5px;color:#9a9388;margin-bottom:18px;">% de empresas que contratam este cargo em cada modelo.</div>
+            <sc-for list="{{ workModels }}" as="w" hint-placeholder-count="3">
+              <div style="margin-bottom:16px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13.5px;font-weight:700;color:#2a2620;">{{ w.label }}</span><span style="font-size:13px;font-weight:800;color:#1d1a16;">{{ w.pctLabel }}</span></div>
+                <div style="height:13px;background:#f1efe9;border-radius:7px;"><div style="{{ w.barStyle }}"></div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #eceae5;border-radius:16px;padding:22px;box-shadow:0 14px 30px -24px rgba(20,18,14,.16);margin-top:18px;">
+          <h3 style="font-size:15.5px;font-weight:800;margin:0 0 4px;color:#1d1a16;">Estados que mais contratam</h3>
+          <div style="font-size:12.5px;color:#9a9388;margin-bottom:22px;">% das empresas do mercado {{ mktLabel }} que contratam este cargo, por estado.</div>
+          <div style="display:flex;align-items:flex-end;gap:18px;height:200px;padding:0 6px;">
+            <sc-for list="{{ states }}" as="s" hint-placeholder-count="6">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:8px;">
+                <span style="font-size:12px;font-weight:800;color:#1d1a16;">{{ s.pctLabel }}</span>
+                <div style="{{ s.barStyle }}"></div>
+                <span style="font-size:12px;font-weight:700;color:#6e6860;">{{ s.uf }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#c2a14d&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;companyName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Consutech&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.fileRef = React.createRef();
+    this.state = { page:'template', upload:'idle', downloaded:false, fileName:'', errorHeadline:'',
+      errCount:0, errRows:0, rowsDetected:0, colsRecognized:0, pendencias:[], preview:[],
+      activeCombo:null, answers:{}, drafts:{},
+      consultaView:'list', detailFamily:null, detailSen:null, detailContract:'CLT',
+      cSearch:'', cSen:'Todas', cLoc:'Todas', cStack:'Todas', cContract:'Todos' };
+  }
+
+  goTo(p){ this.setState({ page:p }); }
+
+  colDefs(){ return [
+    ['A','Localidade',0],['B','Título do Cargo',1],['C','Setor',0],['D','Nível / Categoria',0],['E','Senioridade',1],
+    ['F','ID Funcionário',0],['G','Gênero',0],['H','Escolaridade',0],['I','Certificação Obrigatória',0],['J','Data Nascimento',0],
+    ['K','Admissão Empresa',0],['L','Admissão no Cargo',0],['M','Modelo de trabalho',0],['N','Regime de Contratação',0],['O','Base Horária',1],['P','Salário Mensal Fixo',1],
+    ['Q','Cargo de Confiança',0],['R','Outros Adicionais - Definição',0],['S','Outros Adicionais - Valor',0],['T','PLR Target',0],['U','PLR Pago',0],['V','Base do PLR',0],['W','Bônus Target',0],['X','Bônus Pago',0],['Y','Base do Bônus',0]
+  ]; }
+
+  baseRows(){ return [
+    ['São Paulo - SP','Desenvolvedor(a) Front-end','Engenharia','Pleno','Pleno','T-1001','Feminino','Superior Completo','Não','12/03/1993','05/02/2020','01/06/2022','Remoto','CLT','220h','R$ 9.200,00','Não','—','—','1,2','1,1','Salário','—','—','—'],
+    ['Campinas - SP','Desenvolvedor(a) Back-end','Engenharia','Sênior','Sênior','T-1002','Masculino','Pós-graduação','Sim','27/08/1989','14/01/2018','10/03/2021','Remoto','CLT','220h','R$ 14.500,00','Não','Adic. Tempo de Casa','R$ 600,00','1,5','1,4','Salário','2,0','1,8','Salário'],
+    ['Florianópolis - SC','Engenheiro(a) de Dados','Dados','Sênior','Sênior','T-1003','Masculino','Pós-graduação','Sim','03/11/1990','22/07/2019','22/07/2019','Híbrido','CLT','220h','R$ 16.000,00','Não','—','—','1,6','1,5','Salário','2,2','2,0','Resultado'],
+    ['São Paulo - SP','Engenheiro(a) DevOps / SRE','Infraestrutura','Pleno','Pleno','T-1004','Não-binário','Superior Completo','Sim','19/05/1994','08/09/2021','08/09/2021','Remoto','PJ','200h','R$ 12.800,00','Não','Ajuda de Custo','R$ 400,00','1,2','1,2','Salário','—','—','—'],
+    ['Recife - PE','Analista de QA','Qualidade','Júnior','Júnior','T-1005','Feminino','Superior Completo','Não','21/12/1998','19/06/2023','19/06/2023','Híbrido','CLT','220h','R$ 5.400,00','Não','—','—','0,8','0,7','Salário','—','—','—'],
+    ['Porto Alegre - RS','Product Designer','Produto','Pleno','Pleno','T-1006','Feminino','Superior Completo','Não','15/09/1995','02/03/2020','12/08/2022','Remoto','CLT','220h','R$ 10.500,00','Não','—','—','1,2','1,1','Salário','—','—','—'],
+    ['São Paulo - SP','Arquiteto(a) de Software','Engenharia','Especialista','Especialista','T-1007','Masculino','Pós-graduação','Sim','07/07/1985','25/10/2015','03/02/2020','Híbrido','CLT','200h','R$ 22.000,00','Sim','—','—','2,2','2,1','Salário','3,0','2,8','Resultado'],
+    ['Curitiba - PR','Tech Lead','Engenharia','Coordenação','Liderança','T-1008','Masculino','Pós-graduação','Sim','30/01/1986','11/04/2017','03/02/2021','Híbrido','CLT','200h','R$ 20.000,00','Sim','Bônus Retenção','R$ 1.000,00','2,5','2,3','Salário','3,5','3,2','Resultado']
+  ]; }
+
+  sampleObjects(){
+    const names = this.colDefs().map(c=>c[1]);
+    return this.baseRows().map(r=>{ const o={}; names.forEach((n,i)=>o[n]=r[i]); return o; });
+  }
+
+  certOptions(){ return ['Azure','AWS','GCP','Outros','Não se aplica']; }
+  stackOptions(){ return ['React','Node.js','TypeScript','Python','Java','.NET','SQL','Kubernetes','Go','Salesforce']; }
+
+  // ---------- DOWNLOAD ----------
+  download(){
+    try{
+      const names = this.colDefs().map(c=>c[1]);
+      const rows = this.baseRows().slice(0,2);
+      const XLSX = window.XLSX;
+      if(XLSX){
+        const aoa = [names, ...rows];
+        const ws = XLSX.utils.aoa_to_sheet(aoa);
+        ws['!cols'] = names.map(()=>({wch:18}));
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Colaboradores');
+        XLSX.writeFile(wb, 'template-consutech-2026.xlsx');
+      } else {
+        const esc = v => '"' + String(v).replace(/"/g,'""') + '"';
+        const csv = [names, ...rows].map(r=>r.map(esc).join(',')).join('\n');
+        const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'template-consutech-2026.csv'; a.click();
+      }
+      this.setState({ downloaded:true });
+    }catch(e){ this.setState({ downloaded:true }); }
+  }
+
+  // ---------- UPLOAD ----------
+  triggerFile(){ if(this.fileRef.current) this.fileRef.current.click(); }
+  onFilePick(e){ const f = e.target.files && e.target.files[0]; if(f) this.handleFile(f); e.target.value=''; }
+  onDragOver(e){ e.preventDefault(); }
+  onDrop(e){ e.preventDefault(); const f = e.dataTransfer.files && e.dataTransfer.files[0]; if(f) this.handleFile(f); }
+
+  handleFile(file){
+    this.setState({ upload:'validating', fileName:file.name });
+    const run = (tries)=>{
+      if(!window.XLSX){
+        if(tries>25){ this.setState({ upload:'error', errorHeadline:'Não foi possível carregar o leitor de planilhas. Verifique sua conexão e tente novamente.', errCount:0, pendencias:[], preview:[], rowsDetected:0, colsRecognized:0 }); return; }
+        setTimeout(()=>run(tries+1), 200); return;
+      }
+      const reader = new FileReader();
+      reader.onload = (ev)=>{
+        try{
+          const wb = window.XLSX.read(ev.target.result, { type:'array' });
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          const aoa = window.XLSX.utils.sheet_to_json(ws, { header:1, defval:'', raw:false, blankrows:false });
+          this.validate(aoa);
+        }catch(err){
+          this.setState({ upload:'error', errorHeadline:'Não foi possível ler o arquivo. Confirme que é um .xlsx, .xls ou .csv válido.', errCount:0, pendencias:[], preview:[], rowsDetected:0, colsRecognized:0 });
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    };
+    setTimeout(()=>run(0), 600);
+  }
+
+  validate(aoa){
+    const expected = this.colDefs();
+    const norm = s => String(s==null?'':s).trim().toLowerCase().replace(/\s+/g,' ');
+    const header = (aoa[0]||[]).map(norm);
+    const idxOf = name => header.indexOf(norm(name));
+    const dataRows = aoa.slice(1).filter(r => r && r.some(c => String(c==null?'':c).trim() !== ''));
+
+    const tdBase = {padding:'7px 13px',borderBottom:'1px solid #f0eee9',borderRight:'1px solid #f5f3ee',whiteSpace:'nowrap',color:'#3a352e'};
+    const tdBlank = {padding:'7px 13px',borderBottom:'1px solid #f0eee9',borderRight:'1px solid #f5f3ee',whiteSpace:'nowrap',background:'#fdeceb',color:'#c2453a',fontWeight:'700'};
+
+    const pend = []; const missing = [];
+    let errCount = 0; const affected = new Set();
+    expected.forEach(([l,name,req])=>{
+      if(!req) return;
+      const ci = idxOf(name);
+      if(ci === -1){ missing.push({letter:l,name}); return; }
+      const linhas = [];
+      dataRows.forEach((r,ri)=>{ if(String(r[ci]==null?'':r[ci]).trim()===''){ linhas.push(ri+2); affected.add(ri); } });
+      if(linhas.length){ errCount += linhas.length; pend.push({letter:l,name,countLabel:linhas.length+' em branco',linhasLabel:(linhas.length>1?'linhas ':'linha ')+linhas.slice(0,10).join(', ')+(linhas.length>10?'…':'')}); }
+    });
+    missing.forEach(m=>{ pend.unshift({letter:m.letter,name:m.name,countLabel:'coluna ausente',linhasLabel:'adicione esta coluna ao arquivo'}); errCount += 1; });
+
+    const preview = dataRows.slice(0,14).map((r,ri)=>({
+      linha: ri+2,
+      cells: expected.map(([l,name,req])=>{ const ci=idxOf(name); const v= ci===-1?'':String(r[ci]==null?'':r[ci]).trim(); const blank= req && v===''; return { text: blank?'—':(v||'—'), style: blank?tdBlank:tdBase }; })
+    }));
+
+    const colsRecognized = header.filter(h=>h).length;
+    const rowsDetected = dataRows.length;
+
+    if(rowsDetected === 0){
+      this.setState({ upload:'error', errorHeadline:'O arquivo não tem nenhuma linha de colaborador preenchida.', errCount:0, pendencias:[], preview:[], rowsDetected:0, colsRecognized });
+      return;
+    }
+
+    if(errCount === 0 && missing.length === 0){
+      const names = expected.map(c=>c[1]);
+      this.parsedRows = dataRows.map(r=>{ const o={}; names.forEach(n=>{ const ci=idxOf(n); o[n]= ci===-1?'':String(r[ci]==null?'':r[ci]).trim(); }); return o; });
+      this.setState({ upload:'success', rowsDetected, colsRecognized, preview, errCount:0, errRows:0, pendencias:[], activeCombo:null });
+    } else {
+      const head = errCount + (errCount===1?' campo obrigatório em branco':' campos obrigatórios em branco') + (affected.size? ' em '+affected.size+(affected.size===1?' linha.':' linhas.'):'.') + ' Corrija a planilha e reenvie para liberar o diagnóstico.';
+      this.setState({ upload:'error', errorHeadline:head, rowsDetected, colsRecognized, errCount, errRows:affected.size, pendencias:pend, preview });
+    }
+  }
+
+  resetUpload(){ this.setState({ upload:'idle' }); }
+
+  // ---------- DIAGNÓSTICO ----------
+  diagRows(){ return (this.parsedRows && this.parsedRows.length) ? this.parsedRows : this.sampleObjects(); }
+  combos(){
+    const rows = this.diagRows(); const map = new Map();
+    rows.forEach(r=>{ const cargo=r['Título do Cargo']||'—'; const sen=r['Senioridade']||'—'; const key=cargo+'||'+sen;
+      if(!map.has(key)) map.set(key,{key,cargo,senioridade:sen,setor:r['Setor']||'',count:0});
+      map.get(key).count++; });
+    return [...map.values()];
+  }
+  isAnswered(key){ const a=this.state.answers[key]; return !!(a && (((a.certs||[]).length)||((a.stacks||[]).length))); }
+  selectCombo(key){ this.setState({ activeCombo:key }); }
+  toggleSel(key,q,val){
+    const ans = Object.assign({}, this.state.answers);
+    const cur = Object.assign({certs:[],stacks:[]}, ans[key]);
+    let list = (cur[q]||[]).slice();
+    if(q==='certs' && val==='Não se aplica'){ list = list.indexOf(val)>-1 ? [] : ['Não se aplica']; }
+    else { if(q==='certs') list = list.filter(x=>x!=='Não se aplica'); const i=list.indexOf(val); if(i>-1) list.splice(i,1); else list.push(val); }
+    cur[q]=list; ans[key]=cur; this.setState({ answers:ans });
+  }
+  removeSel(key,q,val){
+    const ans=Object.assign({},this.state.answers); const cur=Object.assign({certs:[],stacks:[]},ans[key]);
+    cur[q]=(cur[q]||[]).filter(x=>x!==val); ans[key]=cur; this.setState({answers:ans});
+  }
+  setDraftVal(key,q,v){ const d=Object.assign({},this.state.drafts); d[key+':'+q]=v; this.setState({drafts:d}); }
+  acceptSuggestion(key,q,sug){
+    const ans=Object.assign({},this.state.answers); const cur=Object.assign({certs:[],stacks:[]},ans[key]); let list=(cur[q]||[]).slice();
+    if(!list.some(x=>x.toLowerCase()===sug.toLowerCase())){ if(q==='certs') list=list.filter(x=>x!=='Não se aplica'); list.push(sug); }
+    cur[q]=list; ans[key]=cur;
+    const d=Object.assign({},this.state.drafts); d[key+':'+q]='';
+    this.setState({answers:ans, drafts:d});
+  }
+  dict(q){ return q==='certs'
+    ? ['Azure','AWS','GCP','Oracle Cloud','Kubernetes (CKA)','Terraform Associate','Scrum Master (PSM)','PMP','ITIL','CISSP','Security+','Google Data Analytics','TOGAF','Cloudera']
+    : ['React','React Native','Node.js','TypeScript','JavaScript','Python','Java','Kotlin','Swift','.NET','C#','Go','Rust','SQL','PostgreSQL','MongoDB','Kubernetes','Docker','Terraform','AWS','Azure','GCP','Spark','Airflow','Kafka','GraphQL','Vue.js','Angular','Next.js','Flutter','TensorFlow','PyTorch','Salesforce','Figma','Elixir','Ruby','PHP','Scala']; }
+  lev(a,b){ a=a.toLowerCase(); b=b.toLowerCase(); const m=a.length,n=b.length; if(!m)return n; if(!n)return m; const d=Array.from({length:m+1},(_,i)=>[i].concat(new Array(n).fill(0))); for(let j=0;j<=n;j++)d[0][j]=j; for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){ const c=a[i-1]===b[j-1]?0:1; d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+c); } return d[m][n]; }
+  suggestFor(q,raw){ const v=(raw||'').trim(); if(v.length<2) return null; const list=this.dict(q); for(const t of list){ if(t.toLowerCase()===v.toLowerCase()) return null; } let best=null,bd=99; list.forEach(t=>{ const d=this.lev(v,t); if(d<bd){bd=d;best=t;} }); const thr=v.length<=4?1:v.length<=7?2:3; return (best && bd>0 && bd<=thr) ? best : null; }
+  addCustom(key,q){
+    const dk=key+':'+q; const v=(this.state.drafts[dk]||'').trim(); if(!v) return;
+    const ans=Object.assign({},this.state.answers); const cur=Object.assign({certs:[],stacks:[]},ans[key]); let list=(cur[q]||[]).slice();
+    if(!list.some(x=>x.toLowerCase()===v.toLowerCase())){ if(q==='certs') list=list.filter(x=>x!=='Não se aplica'); list.push(v); }
+    cur[q]=list; ans[key]=cur;
+    const d=Object.assign({},this.state.drafts); d[dk]='';
+    this.setState({answers:ans, drafts:d});
+  }
+
+  // ---------- ANALYSIS DATA ----------
+  parseSal(s){ const n=parseFloat(String(s==null?'':s).replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.')); return isNaN(n)?0:n; }
+  parseYears(s){ const m=String(s==null?'':s).match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/); if(!m) return 0; let y=+m[3]; if(y<100)y+=2000; const d=new Date(y,(+m[2])-1,+m[1]); if(isNaN(d.getTime())) return 0; return Math.max(0,Math.round((Date.now()-d.getTime())/31557600000*10)/10); }
+  quantile(a,q){ if(!a.length)return 0; if(a.length===1)return a[0]; const pos=(a.length-1)*q, b=Math.floor(pos), r=pos-b; return a[b+1]!==undefined? a[b]+r*(a[b+1]-a[b]) : a[b]; }
+  median(a){ return this.quantile(a.slice().sort((x,y)=>x-y), .5); }
+  brl(n){ return 'R$ '+Math.round(n).toLocaleString('pt-BR'); }
+  brlK(n){ return n>=1000? 'R$ '+(n/1000).toFixed(n>=10000?0:1).replace('.',',')+'k' : 'R$ '+Math.round(n); }
+  demoRecords(){
+    if(this._demo) return this._demo;
+    let seed=20260516; const rnd=()=>{ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; };
+    const pick=a=>a[Math.floor(rnd()*a.length)];
+    const cargos=[
+      {cargo:'Desenvolvedor(a) Front-end',setor:'Engenharia',levels:[['Júnior',5500,4],['Pleno',9000,6],['Sênior',14000,4]]},
+      {cargo:'Desenvolvedor(a) Back-end',setor:'Engenharia',levels:[['Júnior',6000,3],['Pleno',10000,5],['Sênior',15000,4]]},
+      {cargo:'Engenheiro(a) de Dados',setor:'Dados',levels:[['Pleno',12000,3],['Sênior',17000,3]]},
+      {cargo:'Engenheiro(a) DevOps / SRE',setor:'Infraestrutura',levels:[['Pleno',13000,3],['Sênior',18000,2]]},
+      {cargo:'Analista de QA',setor:'Qualidade',levels:[['Júnior',5000,3],['Pleno',8000,3]]},
+      {cargo:'Product Designer',setor:'Produto',levels:[['Pleno',10000,3],['Sênior',14000,2]]},
+      {cargo:'Arquiteto(a) de Software',setor:'Engenharia',levels:[['Especialista',23000,2]]},
+      {cargo:'Tech Lead',setor:'Engenharia',levels:[['Liderança',21000,2]]}
+    ];
+    const locs=[['São Paulo - SP',1.05],['Campinas - SP',1.0],['Florianópolis - SC',0.97],['Curitiba - PR',0.96],['Porto Alegre - RS',0.98],['Recife - PE',0.90]];
+    const escByLvl={'Júnior':['Superior Incompleto','Superior Completo','Superior Completo'],'Pleno':['Superior Completo','Superior Completo','Pós-graduação'],'Sênior':['Superior Completo','Pós-graduação','Pós-graduação'],'Especialista':['Pós-graduação'],'Liderança':['Pós-graduação','Superior Completo']};
+    const recs=[]; let idc=1000;
+    cargos.forEach(cg=>cg.levels.forEach(lv=>{ const sen=lv[0], base=lv[1], n=lv[2];
+      for(let i=0;i<n;i++){
+        const rg=rnd(); const genero= rg<0.4?'Feminino': rg<0.92?'Masculino':'Não-binário';
+        const gf= genero==='Feminino'?0.93: genero==='Não-binário'?0.96:1.0;
+        const loc=pick(locs); const esc=pick(escByLvl[sen]||['Superior Completo']);
+        const tCargo=Math.round((0.4+rnd()*(sen==='Júnior'?2.2:sen==='Pleno'?4:6))*10)/10;
+        const tCasa=Math.round((tCargo+rnd()*3)*10)/10;
+        let fixo=base*loc[1]*gf*(1+Math.min(tCargo,8)*0.012)*(1+(rnd()-0.5)*0.14);
+        if(rnd()<0.08) fixo*=0.82; if(rnd()<0.06) fixo*=1.2;
+        fixo=Math.round(fixo/50)*50;
+        const plrSal= sen==='Júnior'?0.8: sen==='Pleno'?1.2: sen==='Sênior'?1.6:2.2;
+        const bonusSal= (sen==='Sênior'||sen==='Especialista'||sen==='Liderança')?(1+rnd()*2):rnd()*0.6;
+        const total=Math.round((fixo+(plrSal+bonusSal)*fixo/12)/50)*50;
+        idc++; recs.push({id:'T-'+idc,cargo:cg.cargo,setor:cg.setor,sen,loc:loc[0],genero,esc,tCargo,tCasa,fixo,total});
+      }
+    }));
+    this._demo=recs; return recs;
+  }
+  recordsAll(){
+    if(this.parsedRows && this.parsedRows.length){
+      return this.parsedRows.map((r,i)=>{
+        const fixo=this.parseSal(r['Salário Mensal Fixo']);
+        const plr=parseFloat(String(r['PLR Pago']||'').replace(',','.'))||0;
+        const bon=parseFloat(String(r['Bônus Pago']||'').replace(',','.'))||0;
+        return { id:r['ID Funcionário']||('#'+(i+1)), cargo:r['Título do Cargo']||'—', setor:r['Setor']||'', sen:r['Senioridade']||'—', loc:r['Localidade']||'—', genero:r['Gênero']||'—', esc:r['Escolaridade']||'—', tCargo:this.parseYears(r['Admissão no Cargo']), tCasa:this.parseYears(r['Admissão Empresa']), fixo, total:Math.round(fixo+(plr+bon)*fixo/12) };
+      }).filter(x=>x.fixo>0);
+    }
+    return this.demoRecords();
+  }
+  bandsMap(records,basis){ const m={}; records.forEach(r=>{ const k=r.cargo+'||'+r.sen; (m[k]=m[k]||[]).push(r[basis]); }); const o={}; Object.keys(m).forEach(k=>{ const a=m[k].slice().sort((x,y)=>x-y); o[k]={min:a[0],max:a[a.length-1],p25:this.quantile(a,.25),p50:this.quantile(a,.5),p75:this.quantile(a,.75),n:a.length}; }); return o; }
+  rng(str){ let h=2166136261; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619); } return ()=>{ h+=0x6D2B79F5; let t=h; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; }; }
+  brStates(){ return [
+    ['AC','Acre','Norte'],['AL','Alagoas','Nordeste'],['AP','Amapá','Norte'],['AM','Amazonas','Norte'],['BA','Bahia','Nordeste'],['CE','Ceará','Nordeste'],['DF','Distrito Federal','Centro-Oeste'],['ES','Espírito Santo','Sudeste'],['GO','Goiás','Centro-Oeste'],['MA','Maranhão','Nordeste'],['MT','Mato Grosso','Centro-Oeste'],['MS','Mato Grosso do Sul','Centro-Oeste'],['MG','Minas Gerais','Sudeste'],['PA','Pará','Norte'],['PB','Paraíba','Nordeste'],['PR','Paraná','Sul'],['PE','Pernambuco','Nordeste'],['PI','Piauí','Nordeste'],['RJ','Rio de Janeiro','Sudeste'],['RN','Rio Grande do Norte','Nordeste'],['RS','Rio Grande do Sul','Sul'],['RO','Rondônia','Norte'],['RR','Roraima','Norte'],['SC','Santa Catarina','Sul'],['SP','São Paulo','Sudeste'],['SE','Sergipe','Nordeste'],['TO','Tocantins','Norte']
+  ]; }
+  senMult(){ return {'Júnior':0.62,'Pleno':1,'Sênior':1.5,'Especialista':1.92,'Liderança':2.18,'Coordenação':1.72}; }
+  marketFamilies(){ return [
+    {key:'frontend',market:'Desenvolvedor(a) Front-end',area:'Tecnologia',setor:'Engenharia de Software',disc:'Desenvolvimento',smcode:'TEC.210.300.01',cbo:'2124-05',desc:'Desenvolve interfaces web responsivas e acessíveis, integra APIs e cuida de performance e experiência do usuário em produtos digitais.',outras:'Dev Front-end, Engenheiro(a) Front-end, Desenvolvedor(a) Web, UI Engineer',base:9000,trilha:['Júnior','Pleno','Sênior','Especialista'],stacks:['React','TypeScript','JavaScript'],match:/front/i,work:[42,12,46]},
+    {key:'backend',market:'Desenvolvedor(a) Back-end',area:'Tecnologia',setor:'Engenharia de Software',disc:'Desenvolvimento',smcode:'TEC.210.300.02',cbo:'2124-05',desc:'Projeta e mantém serviços, APIs e regras de negócio no servidor, cuidando de escalabilidade, segurança e integração com bancos de dados.',outras:'Dev Back-end, Engenheiro(a) Back-end, Desenvolvedor(a) de Sistemas',base:10000,trilha:['Júnior','Pleno','Sênior','Especialista'],stacks:['Node.js','Java','Python','Go'],match:/back/i,work:[40,14,46]},
+    {key:'fullstack',market:'Desenvolvedor(a) Full-stack',area:'Tecnologia',setor:'Engenharia de Software',disc:'Desenvolvimento',smcode:'TEC.210.300.03',cbo:'2124-05',desc:'Atua nas camadas de front-end e back-end, entregando funcionalidades de ponta a ponta em produtos web.',outras:'Dev Full-stack, Engenheiro(a) Full-stack',base:10500,trilha:['Júnior','Pleno','Sênior'],stacks:['React','Node.js','TypeScript'],match:/full-?stack/i,work:[40,12,48]},
+    {key:'dados',market:'Engenheiro(a) de Dados',area:'Tecnologia',setor:'Dados & Analytics',disc:'Engenharia de Dados',smcode:'TEC.220.100.01',cbo:'2124-10',desc:'Constrói e mantém pipelines de dados, modelagem e infraestrutura de ingestão para alimentar análises e produtos de dados.',outras:'Data Engineer, Engenheiro(a) de Big Data',base:13000,trilha:['Pleno','Sênior','Especialista'],stacks:['Python','SQL'],match:/dados|data eng/i,work:[44,14,42]},
+    {key:'cientista',market:'Cientista de Dados',area:'Tecnologia',setor:'Dados & Analytics',disc:'Ciência de Dados',smcode:'TEC.220.200.01',cbo:'2112-05',desc:'Aplica estatística e modelos de machine learning para extrair insights e apoiar decisões a partir de grandes volumes de dados.',outras:'Data Scientist, Analista de Ciência de Dados',base:14000,trilha:['Pleno','Sênior','Especialista'],stacks:['Python','SQL'],match:/cientista|data scien/i,work:[42,12,46]},
+    {key:'ml',market:'Engenheiro(a) de Machine Learning',area:'Tecnologia',setor:'Dados & Analytics',disc:'Machine Learning',smcode:'TEC.220.300.01',cbo:'2124-15',desc:'Coloca modelos de machine learning em produção, cuidando de pipelines de treinamento, deploy, monitoramento e performance.',outras:'ML Engineer, MLOps Engineer, AI Engineer',base:16000,trilha:['Pleno','Sênior','Especialista'],stacks:['Python'],match:/machine|ml eng/i,work:[40,12,48]},
+    {key:'devops',market:'Engenheiro(a) DevOps / SRE',area:'Tecnologia',setor:'Infraestrutura',disc:'Plataforma',smcode:'TEC.230.100.01',cbo:'2124-20',desc:'Automatiza infraestrutura, pipelines de CI/CD e observabilidade, garantindo disponibilidade e confiabilidade dos sistemas.',outras:'SRE, Engenheiro(a) de Plataforma, Cloud Engineer',base:13500,trilha:['Pleno','Sênior','Especialista'],stacks:['Kubernetes','AWS'],match:/devops|sre/i,work:[38,14,48]},
+    {key:'qa',market:'Analista de QA',area:'Tecnologia',setor:'Qualidade',disc:'Qualidade de Software',smcode:'TEC.240.100.01',cbo:'2124-25',desc:'Planeja e executa testes manuais e automatizados, garantindo a qualidade das entregas de software antes da produção.',outras:'Analista de Testes, QA Engineer, SDET',base:8000,trilha:['Júnior','Pleno','Sênior'],stacks:['Python','SQL'],match:/qa|qualidade|teste/i,work:[44,18,38]},
+    {key:'designer',market:'Product Designer',area:'Tecnologia',setor:'Produto',disc:'Design',smcode:'TEC.250.100.01',cbo:'2624-10',desc:'Conduz pesquisa, prototipação e design de interfaces, equilibrando necessidades do usuário e objetivos de negócio.',outras:'UX/UI Designer, Designer de Produto, UX Designer',base:10500,trilha:['Júnior','Pleno','Sênior','Especialista'],stacks:[],match:/designer/i,work:[42,14,44]},
+    {key:'mobile',market:'Desenvolvedor(a) Mobile',area:'Tecnologia',setor:'Engenharia de Software',disc:'Desenvolvimento',smcode:'TEC.210.400.01',cbo:'2124-05',desc:'Desenvolve aplicativos móveis nativos ou híbridos, cuidando de performance, usabilidade e publicação nas lojas.',outras:'Dev Mobile, Engenheiro(a) Android, Engenheiro(a) iOS',base:10000,trilha:['Júnior','Pleno','Sênior'],stacks:[],match:/mobile|android|ios/i,work:[42,14,44]},
+    {key:'arquiteto',market:'Arquiteto(a) de Software',area:'Tecnologia',setor:'Engenharia de Software',disc:'Arquitetura',smcode:'TEC.210.900.01',cbo:'2124-30',desc:'Define padrões, decisões técnicas e a arquitetura de sistemas de larga escala, orientando times de engenharia.',outras:'Software Architect, Arquiteto(a) de Soluções, Staff Engineer',base:16000,trilha:['Sênior','Especialista'],stacks:['Java','AWS'],match:/arquit/i,work:[44,16,40]},
+    {key:'techlead',market:'Tech Lead',area:'Tecnologia',setor:'Engenharia de Software',disc:'Liderança Técnica',smcode:'TEC.210.950.01',cbo:'1425-10',desc:'Lidera tecnicamente um time de engenharia, equilibrando entregas, qualidade técnica e desenvolvimento das pessoas.',outras:'Líder Técnico, Engineering Lead, Staff Engineer',base:18000,trilha:['Liderança'],stacks:['Node.js','AWS'],match:/tech lead|l[íi]der t|engineering lead/i,work:[46,18,36]},
+    {key:'pm',market:'Product Manager',area:'Tecnologia',setor:'Produto',disc:'Gestão de Produto',smcode:'TEC.250.200.01',cbo:'1425-05',desc:'Define a estratégia, prioriza o roadmap e conecta negócio, tecnologia e design para entregar valor ao usuário.',outras:'Gerente de Produto, PM, Product Owner',base:15000,trilha:['Pleno','Sênior','Especialista','Liderança'],stacks:[],match:/product manager|gerente de produto|^pm$/i,work:[48,16,36]},
+    {key:'seguranca',market:'Analista de Segurança da Informação',area:'Tecnologia',setor:'Segurança',disc:'Segurança',smcode:'TEC.260.100.01',cbo:'2124-35',desc:'Monitora, identifica e mitiga riscos e vulnerabilidades, protegendo dados e sistemas da organização.',outras:'Security Analyst, Analista de Cibersegurança, SecOps',base:13000,trilha:['Pleno','Sênior','Especialista'],stacks:['Python','AWS'],match:/seguran|security/i,work:[40,22,38]}
+  ]; }
+  companyCargoFor(fam){ const recs=this.recordsAll(); for(const r of recs){ if(fam.match.test(r.cargo)) return r.cargo; } return null; }
+  benefitDefs(){ return [['Plano de saúde',95],['Vale refeição',88],['Plano odontológico',80],['Vale alimentação',74],['Auxílio home office',62],['PLR / Bônus',64],['Gympass / Wellhub',48],['Day off no aniversário',52],['Previdência privada',34]]; }
+  setF(field,v){ const o={}; o[field]=v; this.setState(o); }
+  openCargo(famKey){ const fam=this.marketFamilies().find(f=>f.key===famKey); if(!fam)return;
+    let sen=null;
+    Object.keys(this.state.answers).forEach(k=>{ const ix=k.indexOf('||'); const c=k.slice(0,ix), s=k.slice(ix+2); const a=this.state.answers[k]; const answered=a && (((a.certs||[]).length)||((a.stacks||[]).length)); if(answered && fam.match.test(c) && fam.trilha.indexOf(s)>-1 && !sen) sen=s; });
+    if(!sen) sen = (this.state.cSen && this.state.cSen!=='Todas' && fam.trilha.indexOf(this.state.cSen)>-1) ? this.state.cSen : fam.trilha[0];
+    const ct=(this.state.cContract==='PJ'||this.state.cContract==='CLT')?this.state.cContract:'CLT'; this.setState({consultaView:'detail',detailFamily:famKey,detailSen:sen,detailContract:ct}); window.scrollTo&&window.scrollTo(0,0); }
+  backToList(){ this.setState({consultaView:'list'}); }
+  toggleExpand(k){ const e=Object.assign({},this.state.expanded); e[k]=!e[k]; this.setState({expanded:e}); }
+  clearFilters(){ this.setState({fCargo:'Todos',fSen:'Todos',fLoc:'Todos',fGen:'Todos'}); }
+
+  renderVals(){
+    const accent = this.props.accentColor || '#c2a14d';
+    const accentSoft = '#f4eeda';
+    const brandName = this.props.companyName || 'Consutech';
+    const page = this.state.page;
+    const cols = this.colDefs();
+
+    const reqTag = {fontSize:'10.5px',fontWeight:'700',color:'#c2453a',background:'#fbecea',padding:'3px 8px',borderRadius:'6px',whiteSpace:'nowrap',flexShrink:0};
+    const optTag = {fontSize:'10.5px',fontWeight:'600',color:'#94897a',background:'#f1efe9',padding:'3px 8px',borderRadius:'6px',whiteSpace:'nowrap',flexShrink:0};
+    const columns = cols.map(([l,name,req])=>({ l, name, req:!!req, tag: req?'obrig.':'opcional', tagStyle: req?reqTag:optTag, headerLabel: l + '  ' + name + (req?' *':'') }));
+
+    const navBase = {position:'relative',display:'flex',alignItems:'center',gap:'12px',width:'100%',border:'none',cursor:'pointer',textAlign:'left',padding:'10px 12px 10px 18px',borderRadius:'10px',fontFamily:'inherit',fontSize:'14.5px',fontWeight:'500',margin:'2px 0',transition:'background .15s'};
+    const mkNav = (id,n,label)=>{ const a = page===id; return {
+      id, n, label, onClick: ()=>this.goTo(id),
+      itemStyle: Object.assign({}, navBase, { background: a?'#2c2720':'transparent', color: a?'#ffffff':'#b3aca0' }),
+      badgeStyle: {display:'flex',alignItems:'center',justifyContent:'center',width:'23px',height:'23px',borderRadius:'7px',fontSize:'12px',fontWeight:'700',flexShrink:0, background: a?accent:'#322c22', color: a?'#1b1813':'#cabfad'},
+      barStyle: {position:'absolute',left:'0',top:'50%',transform:'translateY(-50%)',width:'3px',height:'18px',borderRadius:'0 3px 3px 0',background: a?accent:'transparent'}
+    };};
+    const navPrimary = [ mkNav('template','1','Template de dados'), mkNav('upload','2','Upload e validação'), mkNav('diagnostico','3','Diagnóstico') ];
+    const crumbMap = { template:'Template de dados', upload:'Upload e validação', diagnostico:'Diagnóstico' };
+
+    // diagnostico
+    const combos = this.combos();
+    const validKeys = combos.map(c=>c.key);
+    let active = (this.state.activeCombo && validKeys.indexOf(this.state.activeCombo)>-1) ? this.state.activeCombo : (combos[0] && combos[0].key);
+    const senTagStyle = {fontSize:'11px',fontWeight:'700',color:'#7a5e1e',background:'#f4eeda',padding:'2px 8px',borderRadius:'6px',whiteSpace:'nowrap'};
+    const comboItemBase = {position:'relative',display:'flex',flexDirection:'column',alignItems:'flex-start',width:'100%',textAlign:'left',border:'none',cursor:'pointer',padding:'12px 14px 12px 18px',borderRadius:'11px',fontFamily:'inherit',marginBottom:'2px'};
+    const comboList = combos.map(c=>{ const a=c.key===active; return {
+      key:c.key, cargo:c.cargo, senioridade:c.senioridade, setor:c.setor, answered:this.isAnswered(c.key),
+      onClick:()=>this.selectCombo(c.key),
+      itemStyle: Object.assign({}, comboItemBase, { background: a?'#f6f1e4':'transparent' }),
+      barStyle: {position:'absolute',left:0,top:'10px',bottom:'10px',width:'3px',borderRadius:'0 3px 3px 0',background: a?accent:'transparent'}
+    };});
+    const activeCombo = combos.find(c=>c.key===active);
+    const ans = this.state.answers[active] || {certs:[],stacks:[]};
+    const answeredTotal = combos.filter(c=>this.isAnswered(c.key)).length;
+
+    const chipStyle = {display:'inline-flex',alignItems:'center',gap:'8px',padding:'7px 9px 7px 14px',borderRadius:'999px',background:accentSoft,border:'1px solid #e3cf95',color:'#7a5e1e',fontSize:'13.5px',fontWeight:'700'};
+    const pillIdle = {display:'inline-flex',alignItems:'center',gap:'7px',padding:'8px 15px',borderRadius:'999px',border:'1px solid #e2ded5',background:'#fff',color:'#46413a',fontSize:'13.5px',fontWeight:'600',cursor:'pointer',fontFamily:'inherit'};
+    const pillActive = {display:'inline-flex',alignItems:'center',gap:'7px',padding:'8px 15px',borderRadius:'999px',border:'1px solid '+accent,background:accentSoft,color:'#7a5e1e',fontSize:'13.5px',fontWeight:'700',cursor:'pointer',fontFamily:'inherit'};
+    const mkSel = (q,list)=> (list||[]).map(v=>({ label:v, onRemove:()=>this.removeSel(active,q,v) }));
+    const mkOpts = (q,opts,sel)=> opts.map(o=>({ label:o, style: (sel.indexOf(o)>-1)?pillActive:pillIdle, onClick:()=>this.toggleSel(active,q,o) }));
+    const certSelected = mkSel('certs', ans.certs);
+    const stackSelected = mkSel('stacks', ans.stacks);
+
+    // ===== ANALYSES =====
+    const basis = this.state.basis;
+    const basisLabel = basis==='fixo' ? 'Salário fixo' : 'Remuneração total';
+    const allRecs = this.recordsAll();
+    const bandsAll = this.bandsMap(allRecs, basis);
+    const ST = {abaixo:'#c98a2b',dentro:'#1f7a48',acima:'#2f6db0'};
+    const STsoft = {abaixo:'#f7ecd8',dentro:'#e6f3ec',acima:'#e7eff8'};
+    const STlabel = {abaixo:'Abaixo',dentro:'Dentro',acima:'Acima'};
+    const statusOf = (v,b)=> !b ? 'dentro' : (v < b.p25 ? 'abaixo' : v > b.p75 ? 'acima' : 'dentro');
+    const uniq = a => a.filter((v,i)=>a.indexOf(v)===i);
+    const fst = this.state;
+    const cargoOpts=['Todos'].concat(uniq(allRecs.map(r=>r.cargo)));
+    const senOpts=['Todos'].concat(uniq(allRecs.map(r=>r.sen)));
+    const locOpts=['Todos'].concat(uniq(allRecs.map(r=>r.loc)));
+    const genOpts=['Todos'].concat(uniq(allRecs.map(r=>r.genero)));
+    const segBtn=(on)=>({padding:'8px 14px',borderRadius:'9px',border:'none',cursor:'pointer',fontFamily:'inherit',fontSize:'13px',fontWeight:'700',whiteSpace:'nowrap',background:on?'#fff':'transparent',color:on?'#1d1a16':'#8a8378',boxShadow:on?'0 1px 3px rgba(0,0,0,.12)':'none'});
+
+    // ---- Consulta (mercado) ----
+    const mktLabel='Nacional';
+    const senMultMap=this.senMult();
+    const fams=this.marketFamilies();
+    const cSt=this.state;
+    const famCompany={}; fams.forEach(f=>{ famCompany[f.key]=this.companyCargoFor(f); });
+    const q=(cSt.cSearch||'').trim().toLowerCase();
+    const cargoCardsAll=fams.filter(f=>{
+      if(cSt.cSen!=='Todas' && f.trilha.indexOf(cSt.cSen)===-1) return false;
+      if(cSt.cStack!=='Todas' && f.stacks.indexOf(cSt.cStack)===-1) return false;
+      if(q){ const hay=(f.market+' '+(famCompany[f.key]||'')+' '+f.outras).toLowerCase(); if(hay.indexOf(q)===-1) return false; }
+      return true;
+    });
+    const cargoCards=cargoCardsAll.map(f=>({ key:f.key, market:f.market, hasCompany:!!famCompany[f.key], company:famCompany[f.key]||'', desc:f.desc, trilhaTags:f.trilha, onOpen:()=>this.openCargo(f.key) }));
+    const cargoCountLabel=cargoCardsAll.length+(cargoCardsAll.length===1?' cargo no mercado ':' cargos no mercado ')+mktLabel;
+    const cSenOpts=['Todas','Júnior','Pleno','Sênior','Especialista','Liderança'];
+    const cLocOpts=['Todas'].concat(this.brStates().map(st=>st[1]+' ('+st[0]+')'));
+    const cStackOpts=['Todas'].concat(this.stackOptions());
+    const cContractOpts=['Todos','PJ','CLT'];
+
+    // detail
+    const dFam=fams.find(f=>f.key===cSt.detailFamily)||fams[0];
+    let dSen=cSt.detailSen; if(!dFam.trilha.includes(dSen)) dSen=dFam.trilha[0];
+    const dContract=cSt.detailContract==='PJ'?'PJ':'CLT';
+    const dCompany=famCompany[dFam.key];
+    const mkQ=(val,low,high)=>({q1:Math.round(val*low),med:Math.round(val),q3:Math.round(val*high)});
+    const salBase=dFam.base*(senMultMap[dSen]||1);
+    let salaryCards=[];
+    if(dContract==='CLT'){
+      const a=mkQ(salBase,0.86,1.16), b=mkQ(salBase*1.10,0.85,1.20);
+      salaryCards=[
+        {title:'Salário Base',sub:'Base Horária: 220h',q1Label:this.brl(a.q1),medLabel:this.brl(a.med),q3Label:this.brl(a.q3)},
+        {title:'Total Dinheiro',sub:'ICP: Pago',q1Label:this.brl(b.q1),medLabel:this.brl(b.med),q3Label:this.brl(b.q3)}
+      ];
+    } else {
+      const c=mkQ(salBase*1.20,0.90,1.12), m=mkQ(salBase*1.38,0.90,1.14), g=mkQ(salBase*1.56,0.90,1.16);
+      salaryCards=[
+        {title:'PJ Conservador',sub:'PJ · CNPJ',q1Label:this.brl(c.q1),medLabel:this.brl(c.med),q3Label:this.brl(c.q3)},
+        {title:'PJ Moderado',sub:'PJ · CNPJ',q1Label:this.brl(m.q1),medLabel:this.brl(m.med),q3Label:this.brl(m.q3)},
+        {title:'PJ Agressivo',sub:'PJ · CNPJ',q1Label:this.brl(g.q1),medLabel:this.brl(g.med),q3Label:this.brl(g.q3)}
+      ];
+    }
+    const salaryGridStyle={display:'grid',gridTemplateColumns:'repeat('+salaryCards.length+',1fr)',gap:'14px'};
+    const br=this.rng('ben'+dFam.key);
+    const benefits=this.benefitDefs().map(d=>{ let p=Math.max(8,Math.min(99,Math.round(d[1]+(br()*12-6)))); return {label:d[0],pct:p}; }).sort((a,b)=>b.pct-a.pct).map(x=>({label:x.label,pctLabel:x.pct+'%',barStyle:{width:x.pct+'%',height:'100%',background:accent,borderRadius:'6px'}}));
+    const wr=this.rng('work'+dFam.key);
+    let wm=[['Híbrido',dFam.work[0]],['Presencial',dFam.work[1]],['Remoto',dFam.work[2]]].map(d=>({label:d[0],pct:Math.max(4,Math.round(d[1]+(wr()*8-4)))}));
+    const wmTot=wm.reduce((a,b)=>a+b.pct,0)||1; wm=wm.map(w=>({label:w.label,pct:Math.round(w.pct/wmTot*100)}));
+    const wmCol={'Híbrido':'#c2a14d','Presencial':'#8a8378','Remoto':'#2f6db0'};
+    const workModels=wm.sort((a,b)=>b.pct-a.pct).map(w=>({label:w.label,pctLabel:w.pct+'%',barStyle:{width:w.pct+'%',height:'100%',background:wmCol[w.label],borderRadius:'7px'}}));
+    const sr=this.rng('st'+dFam.key);
+    const statePool=[['SP',38],['RJ',13],['MG',11],['RS',9],['PR',8],['SC',8],['PE',6],['DF',5]];
+    let stArr=statePool.map(d=>({uf:d[0],pct:Math.max(2,Math.round(d[1]+(sr()*6-3)))}));
+    const selUf=(cSt.cLoc!=='Todas' && cSt.cLoc.match(/\(([A-Z]{2})\)/))?cSt.cLoc.match(/\(([A-Z]{2})\)/)[1]:null;
+    if(selUf && !stArr.find(s=>s.uf===selUf)) stArr.push({uf:selUf,pct:Math.max(3,Math.round(sr()*8))});
+    stArr=stArr.sort((a,b)=>b.pct-a.pct).slice(0,6);
+    const stMax=Math.max.apply(null,stArr.map(s=>s.pct).concat([1]));
+    const states=stArr.map(s=>({uf:s.uf,pctLabel:s.pct+'%',barStyle:{width:'100%',height:Math.max(6,(s.pct/stMax*100))+'%',background:(s.uf===selUf?'#1d1a16':accent),borderRadius:'8px 8px 0 0',minHeight:'6px'}}));
+    const detailTrilha=dFam.trilha.map(sen=>{ const on=sen===dSen; return {label:sen, active:on, onClick:()=>this.setState({detailSen:sen}), style:{padding:'9px 16px',borderRadius:'999px',border:'1px solid '+(on?accent:'#e2ded5'),background:(on?'#1d1a16':'#fff'),color:(on?'#fff':'#46413a'),fontSize:'13px',fontWeight:'700',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'} }; });
+    const locContextLabel=cSt.cLoc==='Todas'?'Todo o Brasil':cSt.cLoc;
+    // ---- diagnóstico aplicado ao cargo ----
+    let diagAns = null;
+    Object.keys(this.state.answers).forEach(k=>{ const ix=k.indexOf('||'); const c=k.slice(0,ix), s=k.slice(ix+2); if(dFam.match.test(c) && s===dSen && !diagAns){ const a=this.state.answers[k]; if(a && (((a.certs||[]).length)||((a.stacks||[]).length))) diagAns=a; } });
+    const rawCerts = diagAns ? (diagAns.certs||[]) : [];
+    const naoAplica = rawCerts.length===1 && rawCerts[0]==='Não se aplica';
+    const diagCerts = naoAplica ? [] : rawCerts;
+    const diagStacks = diagAns ? (diagAns.stacks||[]) : [];
+    const hasDiag = diagCerts.length>0 || diagStacks.length>0 || naoAplica;
+    const pillSel={display:'inline-flex',alignItems:'center',padding:'6px 13px',borderRadius:'999px',background:'#f4eeda',border:'1px solid #e3cf95',color:'#7a5e1e',fontSize:'13px',fontWeight:'700'};
+    const pillStack={display:'inline-flex',alignItems:'center',padding:'6px 13px',borderRadius:'999px',background:'#eef2f6',border:'1px solid #cfdbe8',color:'#2f5a86',fontSize:'13px',fontWeight:'700'};
+    const diagCertPills = diagCerts.map(c=>({label:c, style:pillSel}));
+    const diagStackPills = diagStacks.map(s=>({label:s, style:pillStack}));
+    // % da base neste cargo com certificação obrigatória (coluna do template)
+    const baseCargo = this.diagRows().filter(r=>dFam.match.test(r['Título do Cargo']||''));
+    const certSimN = baseCargo.filter(r=>/^sim/i.test(String(r['Certificação Obrigatória']||'').trim())).length;
+    const certObrigPct = baseCargo.length ? Math.round(certSimN/baseCargo.length*100) : null;
+    const certObrigShow = certObrigPct!==null;
+    // prêmio de mercado por exigir certificação
+    const cloudCerts = diagCerts.filter(c=>/azure|aws|gcp|oracle|kubernetes|cloud|cissp|security/i.test(c));
+    const certPremiumPct = diagCerts.length ? (cloudCerts.length? 11 : 7) : 0;
+    const certPremiumShow = certPremiumPct>0;
+    const medianBase = Math.round(salBase);
+    const medianWithCert = Math.round(salBase*(1+certPremiumPct/100));
+    const certPremiumLabel = '+'+certPremiumPct+'%';
+    const certPremiumDelta = this.brl(medianWithCert-medianBase);
+    const diagCertText = diagCerts.length? diagCerts.join(', ') : '';
+
+
+    return {
+      accent, brandName,
+      crumbLabel: crumbMap[page],
+      navPrimary, columns,
+      isTemplate: page==='template', isUpload: page==='upload', isDiag: page==='diagnostico',
+      upIdle: this.state.upload==='idle', upValidating: this.state.upload==='validating', upError: this.state.upload==='error', upSuccess: this.state.upload==='success',
+      downloaded: this.state.downloaded,
+      download: ()=>this.download(), triggerFile: ()=>this.triggerFile(), onFilePick: (e)=>this.onFilePick(e), onDragOver:(e)=>this.onDragOver(e), onDrop:(e)=>this.onDrop(e),
+      fileRef: this.fileRef, resetUpload: ()=>this.resetUpload(),
+      goTemplate: ()=>this.goTo('template'), goUpload: ()=>this.goTo('upload'), goDiagnostico: ()=>this.goTo('diagnostico'),
+      fileName: this.state.fileName, errorHeadline: this.state.errorHeadline,
+      errCount: this.state.errCount, errRows: this.state.errRows, rowsDetected: this.state.rowsDetected, colsRecognized: this.state.colsRecognized,
+      pendencias: this.state.pendencias, preview: this.state.preview,
+      // diag
+      comboList, comboCount: combos.length, senTagStyle,
+      diagProgressLabel: answeredTotal + ' de ' + combos.length + ' cargos calibrados',
+      activeTitle: activeCombo ? activeCombo.cargo : '—',
+      activeSub: activeCombo ? (activeCombo.senioridade + ' · ' + (activeCombo.setor||'—') + ' · ' + activeCombo.count + (activeCombo.count>1?' colaboradores':' colaborador')) : '',
+      certSelected, certHasSel: certSelected.length>0, certNoSel: certSelected.length===0,
+      certOpts: mkOpts('certs', this.certOptions(), ans.certs||[]),
+      certDraft: this.state.drafts[active+':certs']||'',
+      certSuggestion: this.suggestFor('certs', this.state.drafts[active+':certs']),
+      acceptCertSug: ()=>{ const s=this.suggestFor('certs', this.state.drafts[active+':certs']); if(s) this.acceptSuggestion(active,'certs',s); },
+      onCertDraft: (e)=>this.setDraftVal(active,'certs',e.target.value),
+      onCertKey: (e)=>{ if(e.key==='Enter'){ e.preventDefault(); this.addCustom(active,'certs'); } },
+      addCert: ()=>this.addCustom(active,'certs'),
+      stackSelected, stackHasSel: stackSelected.length>0, stackNoSel: stackSelected.length===0,
+      stackOpts: mkOpts('stacks', this.stackOptions(), ans.stacks||[]),
+      stackDraft: this.state.drafts[active+':stacks']||'',
+      stackSuggestion: this.suggestFor('stacks', this.state.drafts[active+':stacks']),
+      acceptStackSug: ()=>{ const s=this.suggestFor('stacks', this.state.drafts[active+':stacks']); if(s) this.acceptSuggestion(active,'stacks',s); },
+      onStackDraft: (e)=>this.setDraftVal(active,'stacks',e.target.value),
+      onStackKey: (e)=>{ if(e.key==='Enter'){ e.preventDefault(); this.addCustom(active,'stacks'); } },
+      addStack: ()=>this.addCustom(active,'stacks'),
+      hasNextCombo: combos.length>1,
+      nextCombo: ()=>{ const i=combos.findIndex(c=>c.key===active); const nx=combos[(i+1)%combos.length]; if(nx) this.selectCombo(nx.key); },
+      finishDiag: ()=>this.goTo('consulta'),
+      chipStyle,
+      // ---- consulta (mercado) ----
+      isConsultaList: page==='consulta' && this.state.consultaView!=='detail',
+      isConsultaDetail: page==='consulta' && this.state.consultaView==='detail',
+      goConsulta:()=>this.goTo('consulta'),
+      navConsultaStyle: Object.assign({},navBase,{background:page==='consulta'?'#2c2720':'transparent',color:page==='consulta'?'#fff':'#b3aca0'}),
+      barConsulta:{position:'absolute',left:'0',top:'50%',transform:'translateY(-50%)',width:'3px',height:'18px',borderRadius:'0 3px 3px 0',background:page==='consulta'?accent:'transparent'},
+      mktLabel, cargoCards, cargoEmpty:cargoCards.length===0, cargoCountLabel,
+      cSearch:this.state.cSearch, onSearch:(e)=>this.setF('cSearch',e.target.value),
+      cSen:this.state.cSen, cSenOpts, onCSen:(e)=>this.setF('cSen',e.target.value),
+      cLoc:this.state.cLoc, cLocOpts, onCLoc:(e)=>this.setF('cLoc',e.target.value),
+      cStack:this.state.cStack, cStackOpts, onCStack:(e)=>this.setF('cStack',e.target.value),
+      cContract:this.state.cContract, cContractOpts, onCContract:(e)=>this.setF('cContract',e.target.value),
+      clearCFilters:()=>this.setState({cSearch:'',cSen:'Todas',cLoc:'Todas',cStack:'Todas',cContract:'Todos'}),
+      backToList:()=>this.backToList(),
+      locContextLabel, detailTrilha,
+      dTitle:dFam.market, dNivel:dSen, dArea:dFam.area, dSetor:dFam.setor, dDisciplina:dFam.disc, dSMCode:dFam.smcode, dCBO:dFam.cbo,
+      dDesc:dFam.desc, dOutras:dFam.outras, dCompanyShow:!!dCompany, dCompanyNom:dCompany||'',
+      dContract, contractPJStyle:segBtn(dContract==='PJ'), contractCLTStyle:segBtn(dContract==='CLT'),
+      setContractPJ:()=>this.setF('detailContract','PJ'), setContractCLT:()=>this.setF('detailContract','CLT'),
+      salaryCards, salaryGridStyle, benefits, workModels, states,
+      // diagnóstico aplicado
+      hasDiag, diagNoDiag:!hasDiag, naoAplica,
+      diagCertPills, diagCertHas:diagCertPills.length>0, diagStackPills, diagStackHas:diagStackPills.length>0,
+      certObrigShow, certObrigPct, certObrigBarStyle:{width:(certObrigPct||0)+'%',height:'100%',background:'#c2a14d',borderRadius:'6px'},
+      certPremiumShow, certPremiumLabel, certPremiumDelta, diagCertText,
+      goDiagnostico:()=>this.goTo('diagnostico')
+    };
+  }
+}
+</script>
+<script>
+(async () => {
+  if (!document.title || !document.title.trim()) document.title = "Consutech";
+  // Prepend so page-supplied @page / break rules (deck-stage's margin:0,
+  // author CSS) keep source-order precedence over the baseline.
+  const baseCss = document.createElement('style');
+  baseCss.textContent = "@media print {\n  @page { margin: 0.5cm; }\n  section, article, figure, table { break-inside: avoid; }\n  *, *::before, *::after {\n    print-color-adjust: exact; -webkit-print-color-adjust: exact;\n    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;\n    animation-delay: -99s !important; animation-duration: .001s !important;\n    animation-iteration-count: 1 !important; animation-fill-mode: both !important;\n    animation-play-state: running !important; transition-duration: 0s !important;\n  }\n}";
+  document.head.prepend(baseCss);
+  if (document.readyState === 'loading') {
+    await new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }));
+  }
+  let ds = document.querySelector('deck-stage');
+  // whenDefined never resolves when nothing registers the element, so only
+  // await it when a <deck-stage> tag exists (and race a timeout regardless).
+  if (ds && !customElements.get('deck-stage')) {
+    try {
+      await Promise.race([
+        customElements.whenDefined('deck-stage'),
+        new Promise((r) => setTimeout(r, 3000)),
+      ]);
+    } catch (e) {}
+    ds = document.querySelector('deck-stage');
+  }
+  // dc-runtime assigns window.DCLogic at init and mounts into #dc-root on
+  // DOMContentLoaded; settle on that subtree so React has rendered before
+  // print(). Non-DC pages fall through to weighing body.
+  const isDc = !ds && 'DCLogic' in window;
+  const settleRoot = ds || (isDc ? document.getElementById('dc-root') : null) || document.body;
+  if (settleRoot) {
+    // Weigh only content children — skip script/style/template so inline
+    // Babel/CSS doesn't register as stable "content" before the framework
+    // has mounted anything.
+    const MEDIA = 'img,svg,canvas,video,picture,iframe,embed,object';
+    const weigh = () => {
+      let text = 0, media = 0;
+      for (const c of settleRoot.children) {
+        const t = c.tagName;
+        if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+        text += (c.textContent || '').trim().length;
+        media += c.querySelectorAll(MEDIA).length + (c.matches(MEDIA) ? 1 : 0);
+      }
+      return text + media * 100;
+    };
+    // "Non-zero and stable" alone is not sufficient to mean rendered: generic
+    // body can carry a static shell while async main content is pending, and
+    // #dc-root can carry the root DC's static text while child refs are still
+    // .sc-placeholder boxes. Gate generic on readyState 'complete', and never
+    // accept stability while a dc-runtime placeholder is present.
+    const isGeneric = settleRoot === document.body;
+    const deadline = Date.now() + 15000;
+    let last = -1, stable = 0;
+    while (Date.now() < deadline) {
+      const n = weigh();
+      const ready =
+        (!isGeneric || document.readyState === 'complete') &&
+        !settleRoot.querySelector('.sc-placeholder');
+      if (n > 0 && n === last && ready) { if (++stable >= 2) break; } else { stable = 0; }
+      last = n;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  }
+  // Reveal content gated on scroll or visibility before printing. Lazy <img>,
+  // IntersectionObserver fade-ins, and collapsed <details> don't render while
+  // off-screen, so a long page would print with them blank or closed. Open
+  // every <details>, force native-lazy images eager, and scroll the document
+  // through its full height to trip lazy-load + IO; then wait (bounded) for the
+  // newly-triggered images. Inert for deck-stage (slides aren't scroll-gated).
+  try {
+    for (const d of document.querySelectorAll('details')) d.open = true;
+    for (const img of document.querySelectorAll('img[loading="lazy"]'))
+      img.loading = 'eager';
+    const scroller = document.scrollingElement || document.documentElement;
+    const full = Math.max(scroller.scrollHeight, document.body.scrollHeight);
+    const step = window.innerHeight || 800;
+    for (let y = 0; y <= full; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    window.scrollTo(0, 0);
+    await Promise.race([
+      Promise.all(
+        [...document.images].map((img) =>
+          img.complete
+            ? null
+            : new Promise((res) => {
+                img.addEventListener('load', res, { once: true });
+                img.addEventListener('error', res, { once: true });
+              })
+        )
+      ),
+      new Promise((r) => setTimeout(r, 4000)),
+    ]);
+  } catch (e) {}
+  try { await document.fonts.ready; } catch (e) {}
+  // Jump every animation to its end state so print() never captures a slide
+  // mid-entrance. Ordering matters: the 0s-transition style must be live
+  // BEFORE data-deck-active is set so attribute-keyed transitions don't
+  // start a (now-0s) run from the pre-active base.
+  const st = document.createElement('style');
+  st.textContent = '*,*::before,*::after{animation-delay:-99s !important;animation-duration:.001s !important;animation-iteration-count:1 !important;animation-fill-mode:both !important;animation-play-state:running !important;transition-duration:0s !important}';
+  document.head.appendChild(st);
+  for (const d of document.querySelectorAll('deck-stage')) {
+    for (const c of d.children) {
+      const t = c.tagName;
+      if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+      c.setAttribute('data-deck-active', '');
+    }
+  }
+  // Re-append deck-stage's @page last so no author @page can add a margin and
+  // spill each full-bleed slide onto two sheets. Backstop for old copies.
+  if (ds) {
+    let pg = document.getElementById('deck-stage-print-page');
+    if (!pg) {
+      pg = document.createElement('style');
+      pg.textContent = '@page{size:' + (+ds.getAttribute('width') || 1920) +
+        'px ' + (+ds.getAttribute('height') || 1080) + 'px;margin:0}';
+    }
+    document.body.appendChild(pg);
+  }
+  try {
+    const sweep = () => {
+      for (const a of document.getAnimations()) {
+        try { a.finish(); } catch (e) {
+          try { a.currentTime = (a.effect && a.effect.getComputedTiming().duration) || 0; a.pause(); } catch (e2) {}
+        }
+      }
+    };
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+  } catch (e) {}
+  // Relax break-inside on oversized elements. An element taller than a
+  // printable page can't honor break-inside: avoid — browsers either overflow
+  // it or push it whole to the next page, leaving a blank gap, then break it
+  // anyway at an arbitrary point. After the final layout (content revealed,
+  // animations jumped), find elements taller than a page that still compute
+  // break-inside: avoid and reset them to auto, so the browser breaks them at
+  // their children's boundaries instead (children keep their own avoid). PAGE_PX
+  // is a conservative portrait estimate at 96 CSS px/in — Letter/A4 usable
+  // height minus our 0.5in margins — so only clearly-oversized elements are
+  // touched and under-page elements still stay whole. Skipped for decks, whose
+  // slides are sized to the page.
+  try {
+    if (!document.querySelector('deck-stage')) {
+      const PAGE_PX = 1024;
+      // Our print defaults add a body padding inset only when we also zero the
+      // @page margin; computed style can't tell us (it reports screen media),
+      // so read the injected rule directly.
+      const defaults = document.querySelector('style[data-omelette-print-defaults]');
+      const pageInset = /body\s*\{[^}]*padding/.test(defaults ? defaults.textContent || '' : '');
+      const SEL = 'section,article,figure,table,pre,blockquote,[class~="card" i],[class~="page" i],[class~="sheet" i]';
+      for (const el of document.body.querySelectorAll(SEL)) {
+        if (el instanceof HTMLElement && el.offsetHeight > PAGE_PX) {
+          el.setAttribute('data-om-oversized', '');
+          // Fake-paged docs simulate sheets with over-tall break-after:page
+          // boxes; honoring the break spills half-blank pages and ends a
+          // colored box mid-sheet. Flow them, and (only when we own the page
+          // inset) drop the redundant padding/background via the rule below.
+          const cs = getComputedStyle(el);
+          if (cs.breakAfter === 'page' || cs.pageBreakAfter === 'always') {
+            el.setAttribute('data-om-fakepage', '');
+          }
+        }
+      }
+      const ost = document.createElement('style');
+      ost.textContent = '@media print{' +
+        '[data-om-oversized]{break-inside:auto !important;page-break-inside:auto !important}' +
+        '[data-om-fakepage]{break-after:auto !important;page-break-after:auto !important}' +
+        (pageInset ? '[data-om-fakepage]{padding:0 !important;background:none !important}' : '') +
+        '}';
+      document.head.appendChild(ost);
+    }
+  } catch (e) {}
+  // macOS Preview renders Skia-PDF Luminosity soft-masks as opaque grey boxes;
+  // swap the CSS that triggers them for Preview-safe forms.
+  try {
+    for (const el of document.body.querySelectorAll('*')) {
+      const cs = getComputedStyle(el);
+
+      if (cs.boxShadow !== 'none' && cs.filter === 'none') {
+        const outs = [], kept = [];
+        for (const s of cs.boxShadow.split(/,(?![^(]*[)])/)) {
+          const t = s.trim();
+          const m = t.match(/^(rgba?[(][^)]+[)]) (-?[0-9.]+px) (-?[0-9.]+px) ([0-9.]+px) -?[0-9.]+px$/);
+          if (m && parseFloat(m[4]) > 0) outs.push('drop-shadow(' + m[2] + ' ' + m[3] + ' ' + m[4] + ' ' + m[1] + ')');
+          else kept.push(t);
+        }
+        if (outs.length) {
+          el.style.setProperty('filter', outs.join(' '), 'important');
+          el.style.setProperty('box-shadow', kept.join(', ') || 'none', 'important');
+        }
+      }
+
+      const mask = cs.maskImage && cs.maskImage !== 'none' ? cs.maskImage : cs.webkitMaskImage;
+      if (mask && mask !== 'none' && cs.filter === 'none') el.style.setProperty('filter', 'opacity(1)', 'important');
+    }
+  } catch (e) {}
+  setTimeout(() => { try { window.print(); } catch (e) {} }, 200);
+})();
+</script>
+</body>
+</html>
